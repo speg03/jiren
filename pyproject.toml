@@ -21,6 +21,7 @@ classifiers = [
 
 [tool.poetry.dependencies]
 python = "^3.5"
+jinja2 = "^2.10"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.0"
