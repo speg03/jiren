@@ -1,0 +1,10 @@
+# environments
+.python-version
+
+# builds
+__pycache__
+dist
+jiren.egg-info
+
+# tests
+.coverage
