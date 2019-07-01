@@ -26,7 +26,7 @@ echo "hello, {{ message }}" | jiren --message=world
 hello, world
 ```
 
-この例では、テンプレートに `message` という変数が含まれています。テンプレートの書式について詳しく知りたい場合は、jinja2のドキュメントを参照してください (http://jinja.pocoo.org/)。
+この例では、テンプレートに `message` という変数が含まれています。テンプレートの書式について詳しく知りたい場合は、jinja2のドキュメント ( http://jinja.pocoo.org/ ) を参照してください。
 
 ヘルプを使って、テンプレート内に定義された変数を確認することができます。
 

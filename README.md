@@ -28,7 +28,7 @@ Output:
 hello, world
 ```
 
-In this example, the template contains a variable called `message`. If you want to know more about template format, please refer to jinja2 document (http://jinja.pocoo.org/).
+In this example, the template contains a variable called `message`. If you want to know more about template format, please refer to jinja2 document ( http://jinja.pocoo.org/ ).
 
 You can use the help to check the variables defined in the template.
 
