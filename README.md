@@ -11,7 +11,7 @@ Read this in Japanese: [日本語](https://github.com/speg03/jiren/blob/master/R
 
 ## Installation
 
-```
+```sh
 pip install jiren
 ```
 
@@ -20,7 +20,7 @@ pip install jiren
 Generate text from a template using the `jiren` command. The `jiren` command can read templates from stdin.
 
 Command:
-```
+```sh
 echo "hello, {{ message }}" | jiren --message=world
 ```
 Output:
@@ -33,7 +33,7 @@ In this example, the template contains a variable called `message`. If you want 
 You can use the help to check the variables defined in the template.
 
 Command:
-```
+```sh
 echo "hello, {{ message }}" | jiren --help
 ```
 Output:

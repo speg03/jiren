@@ -9,7 +9,7 @@ jirenはテンプレートからテキストを生成するアプリケーショ
 
 ## インストール
 
-```
+```sh
 pip install jiren
 ```
 
@@ -18,7 +18,7 @@ pip install jiren
 `jiren` コマンドを使ってテンプレートからテキストを生成します。 `jiren` コマンドは標準入力からテンプレートを読み込むことができます。
 
 コマンド:
-```
+```sh
 echo "hello, {{ message }}" | jiren --message=world
 ```
 出力:
@@ -31,7 +31,7 @@ hello, world
 ヘルプを使って、テンプレート内に定義された変数を確認することができます。
 
 コマンド:
-```
+```sh
 echo "hello, {{ message }}" | jiren --help
 ```
 出力:
