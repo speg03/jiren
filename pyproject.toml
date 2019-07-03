@@ -9,7 +9,7 @@ license = "MIT"
 
 homepage = "https://github.com/speg03/jiren"
 
-keywords = ["jinja2", "template", "render"]
+keywords = ["jinja2", "template", "render", "text", "preprocessing"]
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Environment :: Console",
