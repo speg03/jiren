@@ -1,13 +1,21 @@
-from jiren.console import Console
+import io
+
+from jiren.cli import main
 
 
-class TestConsole:
-    def test_run(self):
-        stdin = "{{ greeting }}, {{ message }}"
-        arguments = "--greeting=hello --message=world"
-        console = Console(stdin, arguments)
+class TestCLI:
+    def test_main(self, monkeypatch):
+        argv = ["jiren", "--greeting=hello", "--message=world"]
+        stdin = io.StringIO("{{ greeting }}, {{ message }}")
+        stdout = io.StringIO()
 
-        expected = "hello, world"
-        actual = console.run()
+        with monkeypatch.context() as m:
+            m.setattr("sys.argv", argv)
+            m.setattr("sys.stdin", stdin)
+            m.setattr("sys.stdout", stdout)
+            main()
+
+        expected = "hello, world\n"
+        actual = stdout.getvalue()
 
         assert expected == actual
