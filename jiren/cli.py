@@ -4,7 +4,7 @@ import sys
 import jiren
 
 
-class Console:
+class Application:
     def run(self):
         template_str = sys.stdin.read()
         template = jiren.Template(template_str)
@@ -18,4 +18,4 @@ class Console:
 
 
 def main():
-    Console().run()
+    Application().run()

@@ -1,9 +1,9 @@
 import io
 
-from jiren.console import main
+from jiren.cli import main
 
 
-class TestConsole:
+class TestCLI:
     def test_main(self, monkeypatch):
         argv = ["jiren", "--greeting=hello", "--message=world"]
         stdin = io.StringIO("{{ greeting }}, {{ message }}")
