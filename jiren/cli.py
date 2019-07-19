@@ -1,20 +1,31 @@
-import argparse
 import sys
+
+import nestargs
 
 import jiren
 
 
 class Application:
     def run(self):
-        template_str = sys.stdin.read()
+        parser = nestargs.NestedArgumentParser(add_help=False)
+        parser.add_argument("infile", nargs="?")
+        args, _ = parser.parse_known_args()
+
+        if args.infile:
+            with open(args.infile, "r") as f:
+                template_str = f.read()
+        else:
+            template_str = sys.stdin.read()
+
         template = jiren.Template(template_str)
 
-        parser = argparse.ArgumentParser()
+        var_parser = nestargs.NestedArgumentParser(parents=[parser])
+        var_group = var_parser.add_argument_group("variables")
         for v in template.variables():
-            parser.add_argument("--" + v)
-        args = parser.parse_args()
+            var_group.add_argument("--var." + v)
+        args = var_parser.parse_args()
 
-        variables = {k: v for k, v in vars(args).items() if v is not None}
+        variables = {k: v for k, v in vars(args.var).items() if v is not None}
         print(template.render(**variables))
 
 
