@@ -1,16 +1,16 @@
-import jinja2
+from jinja2 import Environment
 from jinja2.meta import find_undeclared_variables
 
 
 class Template:
-    def __init__(self, template_str):
-        self.env = jinja2.Environment()
-        self.template_str = template_str
+    def __init__(self, source):
+        self.environment = Environment()
+        self.source = source
 
     def variables(self):
-        ast = self.env.parse(self.template_str)
+        ast = self.environment.parse(self.source)
         return find_undeclared_variables(ast)
 
     def render(self, *args, **kwargs):
-        template = self.env.from_string(self.template_str)
+        template = self.environment.from_string(self.source)
         return template.render(*args, **kwargs)

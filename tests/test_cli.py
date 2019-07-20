@@ -1,6 +1,6 @@
 import io
 import os
-import tempfile
+from tempfile import TemporaryDirectory
 
 import pytest
 
@@ -36,7 +36,7 @@ class TestApplication:
         [("{{ greeting }}", ["--var.greeting=hello"], "hello\n")],
     )
     def test_run_with_infile(self, monkeypatch, inputs, argv, expected):
-        template_dir = tempfile.TemporaryDirectory(prefix="jiren-")
+        template_dir = TemporaryDirectory(prefix="jiren-")
         template_file = os.path.join(template_dir.name, "template.j2")
         with open(template_file, "w") as f:
             f.write(inputs)

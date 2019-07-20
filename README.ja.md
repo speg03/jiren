@@ -21,7 +21,7 @@ pip install jiren
 
 コマンド:
 ```sh
-echo "hello, {{ message }}" | jiren --var.message=world
+echo "hello, {{ name }}" | jiren --var.name=world
 ```
 出力:
 ```
@@ -33,17 +33,17 @@ hello, world
 コマンド:
 ```sh
 cat <<EOF >template.j2
-hello, {{ message }}
+hello, {{ name }}
 EOF
 
-jiren template.j2 --var.message=world
+jiren template.j2 --var.name=world
 ```
 出力:
 ```
 hello, world
 ```
 
-この例では、テンプレートに `message` という変数が含まれています。 `jiren` コマンドに渡すプログラム引数を使って `message` 変数に値を設定できます。プログラム引数の名前は先頭に `--var.` をつける必要があることに注意してください。
+この例では、テンプレートに `name` という変数が含まれています。 `jiren` コマンドに渡すプログラム引数を使って `name` 変数に値を設定できます。プログラム引数の名前は先頭に `--var.` をつける必要があることに注意してください。
 
 テンプレートの書式について詳しく知りたい場合は、jinja2のドキュメント ( http://jinja.pocoo.org/ ) を参照してください。
 
@@ -51,18 +51,18 @@ hello, world
 
 コマンド:
 ```sh
-echo "hello, {{ message }}" | jiren --help
+echo "hello, {{ name }}" | jiren --help
 ```
 出力:
 ```
-usage: jiren [-h] [--var.message VAR.MESSAGE] [infile]
+usage: jiren [-h] [--var.name VAR.NAME] [infile]
 
 positional arguments:
   infile
 
 optional arguments:
-  -h, --help            show this help message and exit
+  -h, --help            show this help name and exit
 
 variables:
-  --var.message VAR.MESSAGE
+  --var.name VAR.NAME
 ```
