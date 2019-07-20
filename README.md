@@ -64,11 +64,13 @@ Output:
 ```
 usage: jiren [-h] [--var.name VAR.NAME] [infile]
 
+Generate text from a template
+
 positional arguments:
   infile
 
 optional arguments:
-  -h, --help            show this help name and exit
+  -h, --help           show this help message and exit
 
 variables:
   --var.name VAR.NAME

@@ -20,7 +20,9 @@ class Application:
 
         template = Template(source)
 
-        parser = NestedArgumentParser(parents=[pre_parser])
+        parser = NestedArgumentParser(
+            description="Generate text from a template", parents=[pre_parser]
+        )
         var_group = parser.add_argument_group("variables")
         for v in template.variables:
             var_group.add_argument("--var." + v)
