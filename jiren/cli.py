@@ -22,7 +22,7 @@ class Application:
 
         parser = NestedArgumentParser(parents=[pre_parser])
         var_group = parser.add_argument_group("variables")
-        for v in template.variables():
+        for v in template.variables:
             var_group.add_argument("--var." + v)
         args = parser.parse_args()
 

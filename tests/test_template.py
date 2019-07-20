@@ -2,10 +2,11 @@ from jiren import Template
 
 
 class TestTemplate:
-    def test_variables(self):
+    def test_init(self):
         source = "hello, {{ name }}"
         template = Template(source)
-        assert template.variables() == {"name"}
+        assert template.source == source
+        assert template.variables == {"name"}
 
     def test_render(self):
         source = "hello, {{ name }}"
