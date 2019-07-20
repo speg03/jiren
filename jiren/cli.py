@@ -25,7 +25,10 @@ class Application:
             var_group.add_argument("--var." + v)
         args = var_parser.parse_args()
 
-        variables = {k: v for k, v in vars(args.var).items() if v is not None}
+        if "var" in args:
+            variables = {k: v for k, v in vars(args.var).items() if v is not None}
+        else:
+            variables = {}
         print(template.render(**variables))
 
 

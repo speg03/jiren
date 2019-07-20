@@ -14,6 +14,8 @@ class TestApplication:
             ("{{ greeting }}", ["--var.greeting=hello"], "hello\n"),
             ("{{ greeting }}", [], "\n"),
             ("{{ greeting | default('hi') }}", [], "hi\n"),
+            ("hello", [], "hello\n"),
+            ("", [], "\n"),
         ],
     )
     def test_run(self, monkeypatch, inputs, argv, expected):
