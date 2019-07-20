@@ -1,21 +1,14 @@
-import jiren
+from jiren import Template
 
 
 class TestTemplate:
-    def test_variables(self):
-        template_str = "hello, {{ message }}"
-        template = jiren.Template(template_str)
-
-        expected = {"message"}
-        actual = template.variables()
-
-        assert expected == actual
+    def test_init(self):
+        source = "hello, {{ name }}"
+        template = Template(source)
+        assert template.source == source
+        assert template.variables == {"name"}
 
     def test_render(self):
-        template_str = "hello, {{ message }}"
-        template = jiren.Template(template_str)
-
-        expected = "hello, world"
-        actual = template.render(message="world")
-
-        assert expected == actual
+        source = "hello, {{ name }}"
+        template = Template(source)
+        assert template.render(name="world") == "hello, world"

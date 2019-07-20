@@ -1,6 +1,6 @@
 # jiren
 
-jiren is an application that generates text from templates. The format of the template is based on jinja2.
+jiren is an application that generates text from a template. The format of the template is based on jinja2.
 
 [![PyPI](https://img.shields.io/pypi/v/jiren.svg)](https://pypi.org/project/jiren/)
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/jiren.svg)](https://pypi.org/project/jiren/)
@@ -17,13 +17,15 @@ pip install jiren
 
 ## Usage
 
-Generate text from a template using the `jiren` command. This command can read templates from stdin or files.
+### Generate text
+
+Generate text from a template using the `jiren` command. This command can read a template from stdin or files.
 
 An example of reading a template from stdin:
 
 Command:
 ```sh
-echo "hello, {{ message }}" | jiren --var.message=world
+echo "hello, {{ name }}" | jiren --var.name=world
 ```
 Output:
 ```
@@ -35,36 +37,42 @@ An example of reading a template from a file:
 Command:
 ```sh
 cat <<EOF >template.j2
-hello, {{ message }}
+hello, {{ name }}
 EOF
 
-jiren template.j2 --var.message=world
+jiren template.j2 --var.name=world
 ```
 Output:
 ```
 hello, world
 ```
 
-In this example, the template contains a variable called `message`. You can set the value of the `message` variable using program arguments passed to the` jiren` command. Note that the program arguments must be prefixed with `--var.`.
+In this example, the template contains a variable called `name`. You can set values for variables in a template using program arguments passed to the` jiren` command. Note that the program arguments must be prefixed with `--var.`.
 
 If you want to know more about template format, please refer to jinja2 document ( http://jinja.pocoo.org/ ).
 
-You can use the help to check the variables defined in the template.
+
+### Variables in a template
+
+You can use the help to check the variables defined in a template.
 
 Command:
 ```sh
-echo "hello, {{ message }}" | jiren --help
+echo "hello, {{ name }}" | jiren --help
 ```
 Output:
 ```
-usage: jiren [-h] [--var.message VAR.MESSAGE] [infile]
+usage: jiren [-h] [--var.name VAR.NAME] [template]
+
+Generate text from a template
 
 positional arguments:
-  infile
+  template             Template file path. If omitted, read a template from
+                       stdin.
 
 optional arguments:
-  -h, --help            show this help message and exit
+  -h, --help           show this help message and exit
 
 variables:
-  --var.message VAR.MESSAGE
+  --var.name VAR.NAME
 ```
