@@ -35,7 +35,7 @@ class TestApplication:
         "inputs,argv,expected",
         [("{{ greeting }}", ["--var.greeting=hello"], "hello\n")],
     )
-    def test_run_with_infile(self, monkeypatch, inputs, argv, expected):
+    def test_run_with_file(self, monkeypatch, inputs, argv, expected):
         template_dir = TemporaryDirectory(prefix="jiren-")
         template_file = os.path.join(template_dir.name, "template.j2")
         with open(template_file, "w") as f:

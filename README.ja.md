@@ -60,12 +60,13 @@ echo "hello, {{ name }}" | jiren --help
 ```
 出力:
 ```
-usage: jiren [-h] [--var.name VAR.NAME] [infile]
+usage: jiren [-h] [--var.name VAR.NAME] [template]
 
 Generate text from a template
 
 positional arguments:
-  infile
+  template             Template file path. If omitted, read a template from
+                       stdin.
 
 optional arguments:
   -h, --help           show this help message and exit

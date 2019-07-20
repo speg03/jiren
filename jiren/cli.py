@@ -9,11 +9,15 @@ from . import Template
 class Application:
     def run(self):
         pre_parser = ArgumentParser(add_help=False)
-        pre_parser.add_argument("infile", nargs="?")
+        pre_parser.add_argument(
+            "template",
+            nargs="?",
+            help="Template file path. If omitted, read a template from stdin.",
+        )
         pre_args, _ = pre_parser.parse_known_args()
 
-        if pre_args.infile:
-            with open(pre_args.infile, "r") as f:
+        if pre_args.template:
+            with open(pre_args.template, "r") as f:
                 source = f.read()
         else:
             source = sys.stdin.read()
