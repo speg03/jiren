@@ -17,18 +17,37 @@ pip install jiren
 
 ## Usage
 
-Generate text from a template using the `jiren` command. The `jiren` command can read templates from stdin.
+Generate text from a template using the `jiren` command. This command can read templates from stdin or files.
+
+An example of reading a template from stdin:
 
 Command:
 ```sh
-echo "hello, {{ message }}" | jiren --message=world
+echo "hello, {{ message }}" | jiren --var.message=world
 ```
 Output:
 ```
 hello, world
 ```
 
-In this example, the template contains a variable called `message`. If you want to know more about template format, please refer to jinja2 document ( http://jinja.pocoo.org/ ).
+An example of reading a template from a file:
+
+Command:
+```sh
+cat <<EOF >template.j2
+hello, {{ message }}
+EOF
+
+jiren template.j2 --var.message=world
+```
+Output:
+```
+hello, world
+```
+
+In this example, the template contains a variable called `message`. You can set the value of the `message` variable using program arguments passed to the` jiren` command. Note that the program arguments must be prefixed with `--var.`.
+
+If you want to know more about template format, please refer to jinja2 document ( http://jinja.pocoo.org/ ).
 
 You can use the help to check the variables defined in the template.
 
@@ -38,9 +57,14 @@ echo "hello, {{ message }}" | jiren --help
 ```
 Output:
 ```
-usage: jiren [-h] [--message MESSAGE]
+usage: jiren [-h] [--var.message VAR.MESSAGE] [infile]
+
+positional arguments:
+  infile
 
 optional arguments:
-  -h, --help         show this help message and exit
-  --message MESSAGE
+  -h, --help            show this help message and exit
+
+variables:
+  --var.message VAR.MESSAGE
 ```
