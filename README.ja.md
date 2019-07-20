@@ -35,6 +35,7 @@ hello, world
 cat <<EOF >template.j2
 hello, {{ message }}
 EOF
+
 jiren template.j2 --var.message=world
 ```
 出力:
