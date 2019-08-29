@@ -47,7 +47,7 @@ Output:
 hello, world
 ```
 
-In this example, the template contains a variable called `name`. You can set values for variables in a template using program arguments passed to the` jiren` command. Note that the program arguments must be prefixed with `--var.`.
+In this example, the template contains a variable called `name`. You can set values for variables in a template using program arguments passed to the `jiren` command. Note that the program arguments must be prefixed with `--var.`.
 
 If you want to know more about template format, please refer to jinja2 document ( http://jinja.pocoo.org/ ).
 
