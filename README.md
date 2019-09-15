@@ -27,7 +27,7 @@ Command:
 ```sh
 echo "hello, {{ name }}" | jiren --var.name=world
 ```
-Output:
+Outputs:
 ```
 hello, world
 ```
@@ -42,7 +42,7 @@ EOF
 
 jiren template.j2 --var.name=world
 ```
-Output:
+Outputs:
 ```
 hello, world
 ```
@@ -58,21 +58,43 @@ You can use the help to check the variables defined in a template.
 
 Command:
 ```sh
-echo "hello, {{ name }}" | jiren --help
+echo "{{ greeting }}, {{ name }}" | jiren --help
 ```
-Output:
+Outputs:
 ```
-usage: jiren [-h] [--var.name VAR.NAME] [template]
-
-Generate text from a template
-
-positional arguments:
-  template             Template file path. If omitted, read a template from
-                       stdin.
-
-optional arguments:
-  -h, --help           show this help message and exit
+... (omitted)
 
 variables:
   --var.name VAR.NAME
+  --var.greeting VAR.GREETING
+```
+
+
+### Default values
+
+You can set default values for variables for which no values was specified. This is based on the jinja2 specification.
+
+Command:
+```sh
+echo "{{ greeting }}, {{ name | default('world') }}" | jiren --var.greeting=hello
+```
+Outputs:
+```
+hello, world
+```
+
+
+### Strict option
+
+When using the `--strict` option, you must specify values for all variables.
+
+Command:
+```sh
+echo "{{ greeting }}, {{ name }}" | jiren --strict --var.greeting=hello
+```
+Outputs:
+```
+... (omitted)
+
+jiren: error: the following arguments are required: --var.name
 ```

@@ -45,7 +45,7 @@ jiren template.j2 --var.name=world
 hello, world
 ```
 
-この例では、テンプレートに `name` という変数が含まれています。 `jiren` コマンドに渡すプログラム引数を使って、テンプレート内の変数に値を設定できます。プログラム引数の名前は先頭に `--var.` をつける必要があることに注意してください。
+この例では、テンプレートに `name` という変数が含まれています。 `jiren` コマンドに渡すプログラム引数を使って、テンプレート内の変数に値を指定できます。プログラム引数の名前は先頭に `--var.` をつける必要があることに注意してください。
 
 テンプレートの書式について詳しく知りたい場合は、jinja2のドキュメント ( http://jinja.pocoo.org/ ) を参照してください。
 
@@ -56,21 +56,43 @@ hello, world
 
 コマンド:
 ```sh
-echo "hello, {{ name }}" | jiren --help
+echo "{{ greeting }}, {{ name }}" | jiren --help
 ```
 出力:
 ```
-usage: jiren [-h] [--var.name VAR.NAME] [template]
-
-Generate text from a template
-
-positional arguments:
-  template             Template file path. If omitted, read a template from
-                       stdin.
-
-optional arguments:
-  -h, --help           show this help message and exit
+... （中略）
 
 variables:
   --var.name VAR.NAME
+  --var.greeting VAR.GREETING
+```
+
+
+### 変数のデフォルト値
+
+値が指定されなかった変数に対して、デフォルト値を設定することができます。これはjinja2の仕様に基づきます。
+
+コマンド:
+```sh
+echo "{{ greeting }}, {{ name | default('world') }}" | jiren --var.greeting=hello
+```
+出力:
+```
+hello, world
+```
+
+
+### strictオプション
+
+`--strict` オプションを使うと、すべての変数の値を必ず指定しなければいけません。
+
+コマンド:
+```sh
+echo "{{ greeting }}, {{ name }}" | jiren --strict --var.greeting=hello
+```
+出力:
+```
+... （中略）
+
+jiren: error: the following arguments are required: --var.name
 ```
