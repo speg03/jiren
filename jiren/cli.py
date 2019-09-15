@@ -14,6 +14,12 @@ class Application:
             nargs="?",
             help="Template file path. If omitted, read a template from stdin.",
         )
+        pre_parser.add_argument(
+            "-s",
+            "--strict",
+            action="store_true",
+            help="You must specify values for all variables.",
+        )
         pre_args, _ = pre_parser.parse_known_args()
 
         if pre_args.template:
@@ -29,7 +35,7 @@ class Application:
         )
         var_group = parser.add_argument_group("variables")
         for v in template.variables:
-            var_group.add_argument("--var." + v)
+            var_group.add_argument("--var." + v, required=pre_args.strict)
         args = parser.parse_args()
 
         if "var" in args:

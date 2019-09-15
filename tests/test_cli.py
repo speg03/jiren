@@ -12,6 +12,7 @@ class TestApplication:
         "inputs,argv,expected",
         [
             ("{{ greeting }}", ["--var.greeting=hello"], "hello\n"),
+            ("{{ greeting }}", ["--strict", "--var.greeting=hello"], "hello\n"),
             ("{{ greeting }}", [], "\n"),
             ("{{ greeting | default('hi') }}", [], "hi\n"),
             ("hello", [], "hello\n"),
@@ -50,6 +51,22 @@ class TestApplication:
             Application().run()
 
         assert stdout.getvalue() == expected
+
+    def test_run_strictly(self, monkeypatch):
+        argv = ["jiren", "--strict"]
+        stdin = io.StringIO("{{ greeting }}")
+        stderr = io.StringIO()
+
+        with monkeypatch.context() as m:
+            m.setattr("sys.argv", argv)
+            m.setattr("sys.stdin", stdin)
+            m.setattr("sys.stderr", stderr)
+
+            with pytest.raises(SystemExit):
+                Application().run()
+
+        expected = "jiren: error: the following arguments are required: --var.greeting"
+        assert expected in stderr.getvalue()
 
 
 class TestCLI:
