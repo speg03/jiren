@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "jiren"
-version = "0.2.3"
+version = "0.2.4-alpha.0"
 description = "jinja2 template renderer"
 authors = ["Takahiro Yano <speg03@gmail.com>"]
 
