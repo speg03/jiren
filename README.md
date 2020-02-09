@@ -4,7 +4,7 @@ jiren is an application that generates text from a template. The format of the t
 
 [![PyPI](https://img.shields.io/pypi/v/jiren.svg)](https://pypi.org/project/jiren/)
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/jiren.svg)](https://pypi.org/project/jiren/)
-[![Build Status](https://travis-ci.com/speg03/jiren.svg?branch=master)](https://travis-ci.com/speg03/jiren)
+[![Python Tests](https://github.com/speg03/jiren/workflows/Python%20Tests/badge.svg)](https://github.com/speg03/jiren/actions?query=workflow%3A%22Python+Tests%22)
 [![codecov](https://codecov.io/gh/speg03/jiren/branch/master/graph/badge.svg)](https://codecov.io/gh/speg03/jiren)
 
 Read this in Japanese: [日本語](https://github.com/speg03/jiren/blob/master/README.ja.md)
