@@ -82,13 +82,13 @@ hello, world
 ```
 
 
-### strictオプション
+### requiredオプション
 
-`--strict` オプションを使うと、すべての変数の値を必ず指定しなければいけません。
+`--required` オプションを使うと、すべての変数の値を必ず指定しなければいけません。
 
 コマンド:
 ```sh
-echo "{{ greeting }}, {{ name }}" | jiren --strict -- --greeting=hello
+echo "{{ greeting }}, {{ name }}" | jiren --required -- --greeting=hello
 ```
 出力:
 ```

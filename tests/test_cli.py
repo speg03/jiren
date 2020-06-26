@@ -12,7 +12,7 @@ class TestApplication:
         "inputs,argv,expected",
         [
             ("{{ greeting }}", ["--", "--greeting=hello"], "hello\n"),
-            ("{{ greeting }}", ["--strict", "--", "--greeting=hello"], "hello\n"),
+            ("{{ greeting }}", ["--required", "--", "--greeting=hello"], "hello\n"),
             ("{{ greeting }}", [], "\n"),
             ("{{ greeting | default('hi') }}", [], "hi\n"),
             ("hello", [], "hello\n"),
@@ -52,8 +52,8 @@ class TestApplication:
 
         assert stdout.getvalue() == expected
 
-    def test_run_strictly(self, monkeypatch):
-        argv = ["jiren", "--strict"]
+    def test_run_with_required(self, monkeypatch):
+        argv = ["jiren", "--required"]
         stdin = io.StringIO("{{ greeting }}")
         stderr = io.StringIO()
 
