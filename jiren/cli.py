@@ -1,47 +1,43 @@
 import sys
 from argparse import ArgumentParser
 
-from nestargs import NestedArgumentParser
-
 from . import Template
 
 
 class Application:
     def run(self):
-        pre_parser = ArgumentParser(add_help=False)
-        pre_parser.add_argument(
-            "template",
-            nargs="?",
-            help="Template file path. If omitted, read a template from stdin.",
-        )
-        pre_parser.add_argument(
+        command_parser = ArgumentParser()
+        command_parser.add_argument(
             "-s",
             "--strict",
             action="store_true",
             help="You must specify values for all variables.",
         )
-        pre_args, _ = pre_parser.parse_known_args()
+        command_parser.add_argument(
+            "-i",
+            "--input",
+            help='An input template file path. If "-" or omitted, read a template from stdin.',
+        )
+        command_parser.add_argument(
+            "variables", nargs="*", help="Arguments for variables in the template"
+        )
+        command_args = command_parser.parse_args()
 
-        if pre_args.template:
-            with open(pre_args.template, "r") as f:
-                source = f.read()
-        else:
+        if command_args.input is None or command_args.input == "-":
             source = sys.stdin.read()
+        else:
+            with open(command_args.input, "r") as f:
+                source = f.read()
 
         template = Template(source)
 
-        parser = NestedArgumentParser(
-            description="Generate text from a template", parents=[pre_parser]
-        )
-        var_group = parser.add_argument_group("variables")
+        variable_parser = ArgumentParser(description="Generate text from a template")
+        variable_group = variable_parser.add_argument_group("variables")
         for v in template.variables:
-            var_group.add_argument("--var." + v, required=pre_args.strict)
-        args = parser.parse_args()
+            variable_group.add_argument("--" + v, required=command_args.strict)
+        args = variable_parser.parse_args(command_args.variables)
 
-        if "var" in args:
-            variables = {k: v for k, v in vars(args.var).items() if v is not None}
-        else:
-            variables = {}
+        variables = {k: v for k, v in vars(args).items() if v is not None}
         print(template.render(**variables))
 
 

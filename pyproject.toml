@@ -23,7 +23,6 @@ classifiers = [
 [tool.poetry.dependencies]
 python = "^3.5"
 jinja2 = "^2.11"
-nestargs = "^0.4.2"
 importlib-metadata = { version = "^1.5", python = "<3.8" }
 
 [tool.poetry.dev-dependencies]
