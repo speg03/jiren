@@ -84,13 +84,13 @@ hello, world
 ```
 
 
-### Strict option
+### Option: required
 
-When using the `--strict` option, you must specify values for all variables.
+When using the `--required` option, you must specify values for all variables.
 
 Command:
 ```sh
-echo "{{ greeting }}, {{ name }}" | jiren --strict -- --greeting=hello
+echo "{{ greeting }}, {{ name }}" | jiren --required -- --greeting=hello
 ```
 Outputs:
 ```

@@ -8,10 +8,9 @@ class Application:
     def run(self):
         command_parser = ArgumentParser()
         command_parser.add_argument(
-            "-s",
-            "--strict",
+            "--required",
             action="store_true",
-            help="You must specify values for all variables.",
+            help="Required the specific values for all variables.",
         )
         command_parser.add_argument(
             "-i",
@@ -34,7 +33,7 @@ class Application:
         variable_parser = ArgumentParser(description="Generate text from a template")
         variable_group = variable_parser.add_argument_group("variables")
         for v in template.variables:
-            variable_group.add_argument("--" + v, required=command_args.strict)
+            variable_group.add_argument("--" + v, required=command_args.required)
         args = variable_parser.parse_args(command_args.variables)
 
         variables = {k: v for k, v in vars(args).items() if v is not None}
