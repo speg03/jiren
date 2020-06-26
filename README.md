@@ -25,7 +25,7 @@ An example of reading a template from stdin:
 
 Command:
 ```sh
-echo "hello, {{ name }}" | jiren --var.name=world
+echo "hello, {{ name }}" | jiren -- --name=world
 ```
 Outputs:
 ```
@@ -40,14 +40,14 @@ cat <<EOF >template.j2
 hello, {{ name }}
 EOF
 
-jiren template.j2 --var.name=world
+jiren -i template.j2 -- --name=world
 ```
 Outputs:
 ```
 hello, world
 ```
 
-In this example, the template contains a variable called `name`. You can set values for variables in a template using program arguments passed to the `jiren` command. Note that the program arguments must be prefixed with `--var.`.
+In this example, the template contains a variable called `name`. You can set values for variables in a template using program arguments passed to the `jiren` command. Note that the arguments for the variables must be located after `--`.
 
 If you want to know more about template format, please refer to jinja2 document ( http://jinja.pocoo.org/ ).
 
@@ -58,15 +58,15 @@ You can use the help to check the variables defined in a template.
 
 Command:
 ```sh
-echo "{{ greeting }}, {{ name }}" | jiren --help
+echo "{{ greeting }}, {{ name }}" | jiren -- --help
 ```
 Outputs:
 ```
 ... (omitted)
 
 variables:
-  --var.name VAR.NAME
-  --var.greeting VAR.GREETING
+  --name NAME
+  --greeting GREETING
 ```
 
 
@@ -76,7 +76,7 @@ You can set default values for variables for which no values was specified. This
 
 Command:
 ```sh
-echo "{{ greeting }}, {{ name | default('world') }}" | jiren --var.greeting=hello
+echo "{{ greeting }}, {{ name | default('world') }}" | jiren -- --greeting=hello
 ```
 Outputs:
 ```
@@ -90,11 +90,11 @@ When using the `--strict` option, you must specify values for all variables.
 
 Command:
 ```sh
-echo "{{ greeting }}, {{ name }}" | jiren --strict --var.greeting=hello
+echo "{{ greeting }}, {{ name }}" | jiren --strict -- --greeting=hello
 ```
 Outputs:
 ```
 ... (omitted)
 
-jiren: error: the following arguments are required: --var.name
+jiren: error: the following arguments are required: --name
 ```

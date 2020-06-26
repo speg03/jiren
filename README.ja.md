@@ -23,7 +23,7 @@ pip install jiren
 
 コマンド:
 ```sh
-echo "hello, {{ name }}" | jiren --var.name=world
+echo "hello, {{ name }}" | jiren -- --name=world
 ```
 出力:
 ```
@@ -38,14 +38,14 @@ cat <<EOF >template.j2
 hello, {{ name }}
 EOF
 
-jiren template.j2 --var.name=world
+jiren -i template.j2 -- --name=world
 ```
 出力:
 ```
 hello, world
 ```
 
-この例では、テンプレートに `name` という変数が含まれています。 `jiren` コマンドに渡すプログラム引数を使って、テンプレート内の変数に値を指定できます。プログラム引数の名前は先頭に `--var.` をつける必要があることに注意してください。
+この例では、テンプレートに `name` という変数が含まれています。 `jiren` コマンドに渡すプログラム引数を使って、テンプレート内の変数に値を指定できます。テンプレート内の変数は `--` より後ろで指定することに注意してください。
 
 テンプレートの書式について詳しく知りたい場合は、jinja2のドキュメント ( http://jinja.pocoo.org/ ) を参照してください。
 
@@ -56,15 +56,15 @@ hello, world
 
 コマンド:
 ```sh
-echo "{{ greeting }}, {{ name }}" | jiren --help
+echo "{{ greeting }}, {{ name }}" | jiren -- --help
 ```
 出力:
 ```
 ... （中略）
 
 variables:
-  --var.name VAR.NAME
-  --var.greeting VAR.GREETING
+  --name NAME
+  --greeting GREETING
 ```
 
 
@@ -74,7 +74,7 @@ variables:
 
 コマンド:
 ```sh
-echo "{{ greeting }}, {{ name | default('world') }}" | jiren --var.greeting=hello
+echo "{{ greeting }}, {{ name | default('world') }}" | jiren -- --greeting=hello
 ```
 出力:
 ```
@@ -88,11 +88,11 @@ hello, world
 
 コマンド:
 ```sh
-echo "{{ greeting }}, {{ name }}" | jiren --strict --var.greeting=hello
+echo "{{ greeting }}, {{ name }}" | jiren --strict -- --greeting=hello
 ```
 出力:
 ```
 ... （中略）
 
-jiren: error: the following arguments are required: --var.name
+jiren: error: the following arguments are required: --name
 ```
