@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "jiren"
-version = "0.2.4-alpha.0"
+version = "0.3.0"
 description = "jinja2 template renderer"
 authors = ["Takahiro Yano <speg03@gmail.com>"]
 
@@ -31,7 +31,6 @@ pytest-cov = "^2.8"
 black = { version = "^19.10b0", python = "^3.6" }
 flake8 = "^3.7"
 isort = "^4.3"
-jedi = "^0.16.0"
 
 [tool.poetry.scripts]
 jiren = "jiren.cli:main"

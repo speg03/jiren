@@ -15,7 +15,7 @@ class Application:
         command_parser.add_argument(
             "-i",
             "--input",
-            help='An input template file path. If "-" or omitted, read a template from stdin.',
+            help='An input template file path. If "-" or omitted, use stdin.',
         )
         command_parser.add_argument(
             "variables", nargs="*", help="Arguments for variables in the template"
