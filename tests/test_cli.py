@@ -9,23 +9,23 @@ from jiren.cli import Application, main
 
 class TestApplication:
     @pytest.mark.parametrize(
-        "inputs,argv,expected",
+        "template,command,expected",
         [
-            ("{{ greeting }}", ["--", "--greeting=hello"], "hello\n"),
-            ("{{ greeting }}", ["--required", "--", "--greeting=hello"], "hello\n"),
-            ("{{ greeting }}", [], "\n"),
-            ("{{ greeting | default('hi') }}", [], "hi\n"),
-            ("hello", [], "hello\n"),
-            ("", [], "\n"),
+            ("{{ greeting }}", "jiren -- --greeting=hello", "hello\n"),
+            ("{{ greeting }}", "jiren --input=- -- --greeting=hello", "hello\n"),
+            ("{{ greeting }}", "jiren --required -- --greeting=hello", "hello\n"),
+            ("{{ greeting }}", "jiren", "\n"),
+            ("{{ greeting | default('hi') }}", "jiren", "hi\n"),
+            ("hello", "jiren", "hello\n"),
+            ("", "jiren", "\n"),
         ],
     )
-    def test_run(self, monkeypatch, inputs, argv, expected):
-        argv = ["jiren"] + argv
-        stdin = io.StringIO(inputs)
+    def test_run(self, monkeypatch, template, command, expected):
+        stdin = io.StringIO(template)
         stdout = io.StringIO()
 
         with monkeypatch.context() as m:
-            m.setattr("sys.argv", argv)
+            m.setattr("sys.argv", command.split())
             m.setattr("sys.stdin", stdin)
             m.setattr("sys.stdout", stdout)
             Application().run()
@@ -33,32 +33,31 @@ class TestApplication:
         assert stdout.getvalue() == expected
 
     @pytest.mark.parametrize(
-        "inputs,argv,expected",
-        [("{{ greeting }}", ["--", "--greeting=hello"], "hello\n")],
+        "template,command,expected",
+        [("{{ greeting }}", "jiren --input={} -- --greeting=hello", "hello\n")],
     )
-    def test_run_with_file(self, monkeypatch, inputs, argv, expected):
+    def test_run_with_file(self, monkeypatch, template, command, expected):
         template_dir = TemporaryDirectory(prefix="jiren-")
         template_file = os.path.join(template_dir.name, "template.j2")
         with open(template_file, "w") as f:
-            f.write(inputs)
+            f.write(template)
 
-        argv = ["jiren", "--input=" + template_file] + argv
         stdout = io.StringIO()
 
         with monkeypatch.context() as m:
-            m.setattr("sys.argv", argv)
+            m.setattr("sys.argv", command.format(template_file).split())
             m.setattr("sys.stdout", stdout)
             Application().run()
 
         assert stdout.getvalue() == expected
 
     def test_run_with_required(self, monkeypatch):
-        argv = ["jiren", "--required"]
+        command = "jiren --required"
         stdin = io.StringIO("{{ greeting }}")
         stderr = io.StringIO()
 
         with monkeypatch.context() as m:
-            m.setattr("sys.argv", argv)
+            m.setattr("sys.argv", command.split())
             m.setattr("sys.stdin", stdin)
             m.setattr("sys.stderr", stderr)
 
@@ -71,12 +70,12 @@ class TestApplication:
 
 class TestCLI:
     def test_main(self, monkeypatch):
-        argv = ["jiren", "--", "--greeting=hello"]
+        command = "jiren -- --greeting=hello"
         stdin = io.StringIO("{{ greeting }}")
         stdout = io.StringIO()
 
         with monkeypatch.context() as m:
-            m.setattr("sys.argv", argv)
+            m.setattr("sys.argv", command.split())
             m.setattr("sys.stdin", stdin)
             m.setattr("sys.stdout", stdout)
             main()
