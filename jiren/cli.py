@@ -2,11 +2,15 @@ import sys
 from argparse import ArgumentParser
 
 from . import Template
+from . import __version__ as jiren_version
 
 
 class Application:
     def run(self):
         command_parser = ArgumentParser()
+        command_parser.add_argument(
+            "-V", "--version", help="show the version and exit", action="store_true"
+        )
         command_parser.add_argument(
             "--required",
             action="store_true",
@@ -22,6 +26,9 @@ class Application:
         )
         command_args = command_parser.parse_args()
 
+        if command_args.version:
+            print("jiren version {}".format(jiren_version))
+            sys.exit(0)
         if command_args.input is None or command_args.input == "-":
             source = sys.stdin.read()
         else:
