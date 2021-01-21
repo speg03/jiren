@@ -4,6 +4,7 @@ from tempfile import TemporaryDirectory
 
 import pytest
 
+from jiren import __version__ as jiren_version
 from jiren.cli import Application, main
 
 
@@ -30,6 +31,22 @@ class TestApplication:
             m.setattr("sys.stdout", stdout)
             Application().run()
 
+        assert stdout.getvalue() == expected
+
+    def test_run_version(self, monkeypatch):
+        command = "jiren --version"
+        stdin = io.StringIO()
+        stdout = io.StringIO()
+
+        with monkeypatch.context() as m:
+            m.setattr("sys.argv", command.split())
+            m.setattr("sys.stdin", stdin)
+            m.setattr("sys.stdout", stdout)
+
+            with pytest.raises(SystemExit):
+                Application().run()
+
+        expected = "jiren version {}\n".format(jiren_version)
         assert stdout.getvalue() == expected
 
     @pytest.mark.parametrize(
