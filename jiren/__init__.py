@@ -1,3 +1,5 @@
+# pyright: reportMissingImports=false
+
 from .template import Template  # noqa: F401
 
 try:
