@@ -1,8 +1,8 @@
 import sys
 from argparse import ArgumentParser
 
-from . import Template
 from . import __version__ as jiren_version
+from .template import TemplateParser
 
 
 class Application:
@@ -35,16 +35,9 @@ class Application:
             with open(command_args.input, "r") as f:
                 source = f.read()
 
-        template = Template(source)
-
-        variable_parser = ArgumentParser(description="Generate text from a template")
-        variable_group = variable_parser.add_argument_group("variables")
-        for v in template.variables:
-            variable_group.add_argument("--" + v, required=command_args.required)
-        args = variable_parser.parse_args(command_args.variables)
-
-        variables = {k: v for k, v in vars(args).items() if v is not None}
-        print(template.render(**variables))
+        template_parser = TemplateParser(source, required=command_args.required)
+        rendered_text = template_parser.apply(command_args.variables)
+        print(rendered_text)
 
 
 def main():
