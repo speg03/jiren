@@ -3,7 +3,6 @@ import os
 from tempfile import TemporaryDirectory
 
 import pytest
-
 from jiren import __version__ as jiren_version
 from jiren.cli import Application, main
 
@@ -78,7 +77,7 @@ class TestApplication:
             m.setattr("sys.stdin", stdin)
             m.setattr("sys.stderr", stderr)
 
-            with pytest.raises(SystemExit):
+            with pytest.raises(ValueError):
                 Application().run()
 
         expected = "jiren: error: the following arguments are required: --greeting"

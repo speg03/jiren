@@ -1,4 +1,4 @@
-from argparse import ArgumentParser
+import argparse
 
 import jinja2
 from jinja2.meta import find_undeclared_variables
@@ -20,11 +20,15 @@ class TemplateParser:
         self.required = required
 
     def apply(self, variable_args):
-        parser = ArgumentParser()
+        parser = argparse.ArgumentParser()
         group = parser.add_argument_group("Template variables")
         for v in self.template.variables:
             group.add_argument("--{}".format(v), required=self.required)
-        args = parser.parse_args(variable_args)
+
+        try:
+            args = parser.parse_args(variable_args or [])
+        except SystemExit:
+            raise ValueError("invalid arguments: %s", variable_args)
 
         variables = {k: v for k, v in vars(args).items() if v is not None}
         return self.template.render(**variables)
