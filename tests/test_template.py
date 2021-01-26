@@ -1,6 +1,5 @@
 import pytest
-from jiren import Template
-from jiren.template import TemplateParser
+from jiren.template import Template, TemplateParser
 
 
 class TestTemplate:
