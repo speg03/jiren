@@ -1,10 +1,8 @@
 # pyright: reportMissingImports=false
 
-from .template import Template  # noqa: F401
-
 try:
     from importlib.metadata import version
-except ImportError:
+except ImportError:  # pragma: no cover
     from importlib_metadata import version
 
 __version__ = version("jiren")
