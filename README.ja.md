@@ -5,7 +5,7 @@ jirenはテンプレートからテキストを生成するアプリケーショ
 [![PyPI](https://img.shields.io/pypi/v/jiren.svg)](https://pypi.org/project/jiren/)
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/jiren.svg)](https://pypi.org/project/jiren/)
 [![Python Tests](https://github.com/speg03/jiren/workflows/Python%20Tests/badge.svg)](https://github.com/speg03/jiren/actions?query=workflow%3A%22Python+Tests%22)
-[![codecov](https://codecov.io/gh/speg03/jiren/branch/master/graph/badge.svg)](https://codecov.io/gh/speg03/jiren)
+[![codecov](https://codecov.io/gh/speg03/jiren/branch/main/graph/badge.svg)](https://codecov.io/gh/speg03/jiren)
 
 ## インストール
 

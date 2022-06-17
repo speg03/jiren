@@ -2,31 +2,33 @@ name: Python Tests
 
 on:
   push:
-    branches:
-    - master
+    branches: [main]
   pull_request:
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [3.5, 3.6, 3.7, 3.8, 3.9]
+        python-version: ["3.7", "3.8", "3.9", "3.10"]
     steps:
-    - uses: actions/checkout@v2
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v2
-      with:
-        python-version: ${{ matrix.python-version }}
-    - uses: snok/install-poetry@v1.1.1
+      - uses: actions/checkout@v3
+      - name: Install poetry
+        run: pipx install poetry
+      - name: Set up Python ${{ matrix.python-version }}
+        id: setup-python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: "poetry"
 
-    - name: Install dependencies
-      run: poetry install
+      - name: Install library
+        run: |
+          poetry env use ${{ steps.setup-python.outputs.python-version }}
+          poetry install --no-interaction
 
-    - name: Test with pytest
-      run: poetry run pytest -v ./tests
+      - name: Test with pytest
+        run: poetry run pytest -v ./tests
 
-    - name: Upload coverage reports
-      uses: codecov/codecov-action@v1
-      with:
-        token: ${{ secrets.CODECOV_TOKEN }}
+      - name: Upload coverage reports
+        uses: codecov/codecov-action@v3
