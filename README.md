@@ -2,10 +2,10 @@
 
 jiren is an application that generates text from a template. The format of the template is based on jinja2.
 
-[![PyPI](https://img.shields.io/pypi/v/jiren.svg)](https://pypi.org/project/jiren/)
-[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/jiren.svg)](https://pypi.org/project/jiren/)
-[![Python Tests](https://github.com/speg03/jiren/workflows/Python%20Tests/badge.svg)](https://github.com/speg03/jiren/actions?query=workflow%3A%22Python+Tests%22)
-[![codecov](https://codecov.io/gh/speg03/jiren/branch/main/graph/badge.svg)](https://codecov.io/gh/speg03/jiren)
+[![PyPI](https://img.shields.io/pypi/v/jiren)](https://pypi.org/project/jiren/)
+[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/jiren)](https://pypi.org/project/jiren/)
+[![Python Tests](https://github.com/speg03/jiren/actions/workflows/python-tests.yml/badge.svg)](https://github.com/speg03/jiren/actions/workflows/python-tests.yml)
+[![codecov](https://codecov.io/gh/speg03/jiren/branch/main/graph/badge.svg?token=bFdpze6ELR)](https://codecov.io/gh/speg03/jiren)
 
 Read this in Japanese: [日本語](https://github.com/speg03/jiren/blob/main/README.ja.md)
 
