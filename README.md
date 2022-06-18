@@ -25,7 +25,7 @@ An example of reading a template from stdin:
 
 Command:
 ```sh
-echo "hello, {{ name }}" | jiren -- --name=world
+echo "hello, {{ name }}" | jiren --input=- -- --name=world
 ```
 Outputs:
 ```
@@ -40,7 +40,7 @@ cat <<EOF >template.j2
 hello, {{ name }}
 EOF
 
-jiren -i template.j2 -- --name=world
+jiren --input=template.j2 -- --name=world
 ```
 Outputs:
 ```
@@ -58,7 +58,7 @@ You can use the help to check the variables defined in a template.
 
 Command:
 ```sh
-echo "{{ greeting }}, {{ name }}" | jiren -- --help
+echo "{{ greeting }}, {{ name }}" | jiren --input=- --help
 ```
 Outputs:
 ```
@@ -76,7 +76,7 @@ You can set default values for variables for which no values was specified. This
 
 Command:
 ```sh
-echo "{{ greeting }}, {{ name | default('world') }}" | jiren -- --greeting=hello
+echo "{{ greeting }}, {{ name | default('world') }}" | jiren --input=- -- --greeting=hello
 ```
 Outputs:
 ```
@@ -90,11 +90,9 @@ When using the `--required` option, you must specify values for all variables.
 
 Command:
 ```sh
-echo "{{ greeting }}, {{ name }}" | jiren --required -- --greeting=hello
+echo "{{ greeting }}, {{ name }}" | jiren --input=- --required -- --greeting=hello
 ```
 Outputs:
 ```
-... (omitted)
-
 jiren: error: the following arguments are required: --name
 ```
