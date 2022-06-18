@@ -11,3 +11,4 @@ class TestTemplate:
         source = "hello, {{ name }}"
         template = Template(source)
         assert template.render(name="world") == "hello, world"
+        assert template.render({"name": "world"}) == "hello, world"

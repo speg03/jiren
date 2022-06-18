@@ -12,6 +12,7 @@ from jiren.cli import main
         ("{{ greeting }}", "--greeting=hello", "hello\n"),
         ("{{ greeting }}", "", "\n"),
         ("{{ greeting | default('hi') }}", "", "hi\n"),
+        ("{{ __greeting__message__ }}", "--greeting--message=hello", "hello\n"),
         ("hello", "", "hello\n"),
         ("", "", "\n"),
     ],
@@ -72,7 +73,7 @@ def test_main_version(monkeypatch):
         with pytest.raises(SystemExit):
             main()
 
-    assert versions.jiren_version in stdout.getvalue()
+    assert f"jiren, version {versions.jiren_version}" in stdout.getvalue()
 
 
 @pytest.mark.parametrize(
