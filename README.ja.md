@@ -23,7 +23,7 @@ pip install jiren
 
 コマンド:
 ```sh
-echo "hello, {{ name }}" | jiren -- --name=world
+echo "hello, {{ name }}" | jiren --input=- -- --name=world
 ```
 出力:
 ```
@@ -38,7 +38,7 @@ cat <<EOF >template.j2
 hello, {{ name }}
 EOF
 
-jiren -i template.j2 -- --name=world
+jiren --input=template.j2 -- --name=world
 ```
 出力:
 ```
@@ -56,7 +56,7 @@ hello, world
 
 コマンド:
 ```sh
-echo "{{ greeting }}, {{ name }}" | jiren -- --help
+echo "{{ greeting }}, {{ name }}" | jiren --input=- --help
 ```
 出力:
 ```
@@ -74,7 +74,7 @@ variables:
 
 コマンド:
 ```sh
-echo "{{ greeting }}, {{ name | default('world') }}" | jiren -- --greeting=hello
+echo "{{ greeting }}, {{ name | default('world') }}" | jiren --input=- -- --greeting=hello
 ```
 出力:
 ```
@@ -88,11 +88,9 @@ hello, world
 
 コマンド:
 ```sh
-echo "{{ greeting }}, {{ name }}" | jiren --required -- --greeting=hello
+echo "{{ greeting }}, {{ name }}" | jiren --input=- --required -- --greeting=hello
 ```
 出力:
 ```
-... （中略）
-
 jiren: error: the following arguments are required: --name
 ```
