@@ -1,34 +1,16 @@
-import argparse
+from typing import Any
 
 import jinja2
-from jinja2.meta import find_undeclared_variables
+from jinja2 import meta
 
 
-class Template(jinja2.Template):
-    def __init__(self, source):
-        super().__init__()
+class Template:
+    def __init__(self, source: str):
+        env = jinja2.Environment()
+        self._template = env.from_string(source)
 
-        ast = self.environment.parse(source)
+        ast = env.parse(source)
+        self.variables = meta.find_undeclared_variables(ast)
 
-        self.source = source
-        self.variables = find_undeclared_variables(ast)
-
-
-class TemplateParser:
-    def __init__(self, source, required=False):
-        self.template = Template(source)
-        self.required = required
-
-    def apply(self, variable_args):
-        parser = argparse.ArgumentParser()
-        group = parser.add_argument_group("Template variables")
-        for v in self.template.variables:
-            group.add_argument("--{}".format(v), required=self.required)
-
-        try:
-            args = parser.parse_args(variable_args or [])
-        except SystemExit:
-            raise ValueError("invalid arguments: %s", variable_args)
-
-        variables = {k: v for k, v in vars(args).items() if v is not None}
-        return self.template.render(**variables)
+    def render(self, *args: Any, **kwargs: Any) -> str:
+        return self._template.render(*args, **kwargs)
