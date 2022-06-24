@@ -34,7 +34,7 @@ def main():
     if args.input:
         template = Template(args.input.read())
         for v in template.variables:
-            sanitized_name = v.replace("_", "-").lstrip("-").rstrip("-")
+            sanitized_name = v.replace("_", "-").strip("-")
             variable_group.add_argument(
                 f"--{sanitized_name}", dest=v, required=args.required
             )
