@@ -27,8 +27,8 @@ jobs:
           poetry env use ${{ steps.setup-python.outputs.python-version }}
           poetry install --no-interaction
 
-      - name: Test with pytest
-        run: poetry run pytest -v ./tests
+      - name: Test
+        run: poetry run make test
 
       - name: Upload coverage reports
         uses: codecov/codecov-action@v3
