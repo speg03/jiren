@@ -76,15 +76,11 @@ def test_main_version(monkeypatch):
     assert f"jiren, version {versions.jiren_version}" in stdout.getvalue()
 
 
-@pytest.mark.parametrize(
-    "template,variables,expected",
-    [("{{ greeting }}", "--greeting=hello", "hello\n")],
-)
-def test_main_with_file(monkeypatch, tmp_path, template, variables, expected):
+def test_main_with_template_file(monkeypatch, tmp_path):
     template_file = tmp_path / "template.j2"
-    template_file.write_text(template)
+    template_file.write_text("{{ greeting }}")
 
-    command = f"jiren --input={template_file} -- {variables}"
+    command = f"jiren --input={template_file} -- --greeting=hello"
     stdout = io.StringIO()
 
     with monkeypatch.context() as m:
@@ -92,7 +88,96 @@ def test_main_with_file(monkeypatch, tmp_path, template, variables, expected):
         m.setattr("sys.stdout", stdout)
         main()
 
-    assert stdout.getvalue() == expected
+    assert stdout.getvalue() == "hello\n"
+
+
+def test_main_with_json_data_file(monkeypatch, tmp_path):
+    data_file = tmp_path / "data.json"
+    data_file.write_text("{'greeting': 'hello'}")
+
+    command = f"jiren --input=- --data={data_file}"
+    stdin = io.StringIO("{{ greeting }}")
+    stdout = io.StringIO()
+
+    with monkeypatch.context() as m:
+        m.setattr("sys.argv", command.split())
+        m.setattr("sys.stdin", stdin)
+        m.setattr("sys.stdout", stdout)
+        main()
+
+    assert stdout.getvalue() == "hello\n"
+
+
+def test_main_with_yaml_data_file(monkeypatch, tmp_path):
+    data_file = tmp_path / "data.yaml"
+    data_file.write_text("greeting: hello")
+
+    command = f"jiren --input=- --data={data_file}"
+    stdin = io.StringIO("{{ greeting }}")
+    stdout = io.StringIO()
+
+    with monkeypatch.context() as m:
+        m.setattr("sys.argv", command.split())
+        m.setattr("sys.stdin", stdin)
+        m.setattr("sys.stdout", stdout)
+        main()
+
+    assert stdout.getvalue() == "hello\n"
+
+
+def test_main_with_json_data_file_unknown_variables(monkeypatch, tmp_path):
+    data_file = tmp_path / "data.json"
+    data_file.write_text("{'a': 1, 'b': 2, 'c': 3}")
+
+    command = f"jiren --input=- --data={data_file}"
+    stdin = io.StringIO("{{ greeting }}")
+    stdout = io.StringIO()
+
+    with monkeypatch.context() as m:
+        m.setattr("sys.argv", command.split())
+        m.setattr("sys.stdin", stdin)
+        m.setattr("sys.stdout", stdout)
+        main()
+
+    assert stdout.getvalue() == "\n"
+
+
+def test_main_strictly_with_json_data_file_unknown_variables(monkeypatch, tmp_path):
+    data_file = tmp_path / "data.json"
+    data_file.write_text("{'a': 1, 'b': 2, 'c': 3}")
+
+    command = f"jiren --input=- --data={data_file} --strict"
+    stdin = io.StringIO("{{ greeting }}")
+    stderr = io.StringIO()
+
+    with monkeypatch.context() as m:
+        m.setattr("sys.argv", command.split())
+        m.setattr("sys.stdin", stdin)
+        m.setattr("sys.stderr", stderr)
+
+        with pytest.raises(SystemExit):
+            main()
+
+    assert "the data file contains unknown variables: a, b, c" in stderr.getvalue()
+
+
+def test_main_with_yaml_data_file_no_keys(monkeypatch, tmp_path):
+    data_file = tmp_path / "data.yaml"
+    data_file.write_text("hello")
+
+    command = f"jiren --input=- --data={data_file}"
+    stdin = io.StringIO("{{ greeting }}")
+    stderr = io.StringIO()
+
+    with monkeypatch.context() as m:
+        m.setattr("sys.argv", command.split())
+        m.setattr("sys.stdin", stdin)
+        m.setattr("sys.stderr", stderr)
+
+        with pytest.raises(SystemExit):
+            main()
+
+    assert f"the data file must have at least one key: {data_file}" in stderr.getvalue()
 
 
 def test_main_with_no_inputs(monkeypatch):
@@ -125,7 +210,24 @@ def test_main_with_unknown_variable(monkeypatch):
     assert "unrecognized arguments: --unknown=argument" in stderr.getvalue()
 
 
-def test_main_with_required_option(monkeypatch):
+def test_main_with_required(monkeypatch, tmp_path):
+    data_file = tmp_path / "data.yaml"
+    data_file.write_text("greeting: hello")
+
+    command = f"jiren --input=- --data={data_file} --required"
+    stdin = io.StringIO("{{ greeting }}")
+    stdout = io.StringIO()
+
+    with monkeypatch.context() as m:
+        m.setattr("sys.argv", command.split())
+        m.setattr("sys.stdin", stdin)
+        m.setattr("sys.stdout", stdout)
+        main()
+
+    assert stdout.getvalue() == "hello\n"
+
+
+def test_main_with_no_required_variables(monkeypatch):
     command = "jiren --input=- --required"
     stdin = io.StringIO("{{ greeting }}")
     stderr = io.StringIO()
@@ -138,4 +240,4 @@ def test_main_with_required_option(monkeypatch):
         with pytest.raises(SystemExit):
             main()
 
-    assert "the following arguments are required: --greeting" in stderr.getvalue()
+    assert "the following variables are required: greeting" in stderr.getvalue()
