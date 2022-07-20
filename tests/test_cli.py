@@ -93,10 +93,10 @@ def test_main_with_template_file(monkeypatch, tmp_path):
 
 def test_main_with_json_data_file(monkeypatch, tmp_path):
     data_file = tmp_path / "data.json"
-    data_file.write_text("{'greeting': 'hello'}")
+    data_file.write_text("{'greeting': {'message': 'hello', 'target': 'world'} }")
 
     command = f"jiren --input=- --data={data_file}"
-    stdin = io.StringIO("{{ greeting }}")
+    stdin = io.StringIO("{{ greeting.message }}, {{ greeting.target }}")
     stdout = io.StringIO()
 
     with monkeypatch.context() as m:
@@ -105,15 +105,15 @@ def test_main_with_json_data_file(monkeypatch, tmp_path):
         m.setattr("sys.stdout", stdout)
         main()
 
-    assert stdout.getvalue() == "hello\n"
+    assert stdout.getvalue() == "hello, world\n"
 
 
 def test_main_with_yaml_data_file(monkeypatch, tmp_path):
     data_file = tmp_path / "data.yaml"
-    data_file.write_text("greeting: hello")
+    data_file.write_text("greeting:\n  message: hello\n  target: world")
 
     command = f"jiren --input=- --data={data_file}"
-    stdin = io.StringIO("{{ greeting }}")
+    stdin = io.StringIO("{{ greeting.message }}, {{ greeting.target }}")
     stdout = io.StringIO()
 
     with monkeypatch.context() as m:
@@ -122,7 +122,7 @@ def test_main_with_yaml_data_file(monkeypatch, tmp_path):
         m.setattr("sys.stdout", stdout)
         main()
 
-    assert stdout.getvalue() == "hello\n"
+    assert stdout.getvalue() == "hello, world\n"
 
 
 def test_main_with_json_data_file_unknown_variables(monkeypatch, tmp_path):
