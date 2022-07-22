@@ -58,7 +58,7 @@ You can use the help to check the variables defined in a template.
 
 Command:
 ```sh
-echo "{{ greeting }}, {{ name }}" | jiren --input=- --help
+echo "{{ message }}, {{ name }}" | jiren --input=- --help
 ```
 Outputs:
 ```
@@ -66,7 +66,7 @@ Outputs:
 
 variables:
   --name NAME
-  --greeting GREETING
+  --message MESSAGE
 ```
 
 
@@ -76,11 +76,50 @@ You can set default values for variables for which no values was specified. This
 
 Command:
 ```sh
-echo "{{ greeting }}, {{ name | default('world') }}" | jiren --input=- -- --greeting=hello
+echo "{{ message }}, {{ name | default('world') }}" | jiren --input=- -- --message=hello
 ```
 Outputs:
 ```
 hello, world
+```
+
+
+### Option: data
+
+You can pass a file with variables defined structurally using the `--data` option.
+
+Command:
+```sh
+cat <<EOF >data.yaml
+greeting:
+  message: hello
+  name: world
+EOF
+
+echo "{{ greeting.message }}, {{ greeting.name }}" | jiren --input=- --data=data.yaml
+```
+Outputs:
+```
+hello, world
+```
+
+
+### Option: strict
+
+If the `--strict` option is used with the `--data` option, all variables in the data file must be used in the template.
+
+Command:
+```sh
+cat <<EOF >data.yaml
+message: hello
+invalid_key: invalid
+EOF
+
+echo "{{ message }}" | jiren --input=- --data=data.yaml --strict
+```
+Outputs:
+```
+jiren: error: the data file contains unknown variables: invalid_key
 ```
 
 
@@ -90,9 +129,9 @@ When using the `--required` option, you must specify values for all variables.
 
 Command:
 ```sh
-echo "{{ greeting }}, {{ name }}" | jiren --input=- --required -- --greeting=hello
+echo "{{ message }}, {{ name }}" | jiren --input=- --required -- --message=hello
 ```
 Outputs:
 ```
-jiren: error: the following arguments are required: --name
+jiren: error: the following variables are required: name
 ```

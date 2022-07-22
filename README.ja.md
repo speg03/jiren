@@ -56,7 +56,7 @@ hello, world
 
 コマンド:
 ```sh
-echo "{{ greeting }}, {{ name }}" | jiren --input=- --help
+echo "{{ message }}, {{ name }}" | jiren --input=- --help
 ```
 出力:
 ```
@@ -64,7 +64,7 @@ echo "{{ greeting }}, {{ name }}" | jiren --input=- --help
 
 variables:
   --name NAME
-  --greeting GREETING
+  --message MESSAGE
 ```
 
 
@@ -74,11 +74,50 @@ variables:
 
 コマンド:
 ```sh
-echo "{{ greeting }}, {{ name | default('world') }}" | jiren --input=- -- --greeting=hello
+echo "{{ message }}, {{ name | default('world') }}" | jiren --input=- -- --message=hello
 ```
 出力:
 ```
 hello, world
+```
+
+
+### dataオプション
+
+`--data` オプションを使うことで、構造的に変数を定義したファイルを渡すことができます。
+
+コマンド:
+```sh
+cat <<EOF >data.yaml
+greeting:
+  message: hello
+  name: world
+EOF
+
+echo "{{ greeting.message }}, {{ greeting.name }}" | jiren --input=- --data=data.yaml
+```
+出力:
+```
+hello, world
+```
+
+
+### strictオプション
+
+`--strict` オプションを `--data` オプションと同時に使用したとき、指定したデータファイルに定義された変数はすべてテンプレートの中で使用されていなければなりません。
+
+コマンド:
+```sh
+cat <<EOF >data.yaml
+message: hello
+invalid_key: invalid
+EOF
+
+echo "{{ message }}" | jiren --input=- --data=data.yaml --strict
+```
+出力:
+```
+jiren: error: the data file contains unknown variables: invalid_key
 ```
 
 
@@ -88,9 +127,9 @@ hello, world
 
 コマンド:
 ```sh
-echo "{{ greeting }}, {{ name }}" | jiren --input=- --required -- --greeting=hello
+echo "{{ message }}, {{ name }}" | jiren --input=- --required -- --message=hello
 ```
 出力:
 ```
-jiren: error: the following arguments are required: --name
+jiren: error: the following variables are required: name
 ```
