@@ -23,7 +23,7 @@ pip install jiren
 
 コマンド:
 ```sh
-echo "hello, {{ name }}" | jiren --input=- -- --name=world
+echo "hello, {{ name }}" | jiren - -- --name=world
 ```
 出力:
 ```
@@ -38,7 +38,7 @@ cat <<EOF >template.j2
 hello, {{ name }}
 EOF
 
-jiren --input=template.j2 -- --name=world
+jiren template.j2 -- --name=world
 ```
 出力:
 ```
@@ -56,7 +56,7 @@ hello, world
 
 コマンド:
 ```sh
-echo "{{ message }}, {{ name }}" | jiren --input=- --help
+echo "{{ message }}, {{ name }}" | jiren - --help
 ```
 出力:
 ```
@@ -74,7 +74,7 @@ variables:
 
 コマンド:
 ```sh
-echo "{{ message }}, {{ name | default('world') }}" | jiren --input=- -- --message=hello
+echo "{{ message }}, {{ name | default('world') }}" | jiren - -- --message=hello
 ```
 出力:
 ```
@@ -94,7 +94,7 @@ greeting:
   name: world
 EOF
 
-echo "{{ greeting.message }}, {{ greeting.name }}" | jiren --input=- --data=data.yaml
+echo "{{ greeting.message }}, {{ greeting.name }}" | jiren - --data=data.yaml
 ```
 出力:
 ```
@@ -113,7 +113,7 @@ message: hello
 invalid_key: invalid
 EOF
 
-echo "{{ message }}" | jiren --input=- --data=data.yaml --strict
+echo "{{ message }}" | jiren - --data=data.yaml --strict
 ```
 出力:
 ```
@@ -127,7 +127,7 @@ jiren: error: the data file contains unknown variables: invalid_key
 
 コマンド:
 ```sh
-echo "{{ message }}, {{ name }}" | jiren --input=- --required -- --message=hello
+echo "{{ message }}, {{ name }}" | jiren - --required -- --message=hello
 ```
 出力:
 ```
