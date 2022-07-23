@@ -56,7 +56,7 @@ hello, world
 
 コマンド:
 ```sh
-echo "{{ message }}, {{ name }}" | jiren - --help
+echo "{{ message }}, {{ name }}" | jiren --help -
 ```
 出力:
 ```
@@ -94,7 +94,7 @@ greeting:
   name: world
 EOF
 
-echo "{{ greeting.message }}, {{ greeting.name }}" | jiren - --data=data.yaml
+echo "{{ greeting.message }}, {{ greeting.name }}" | jiren --data=data.yaml -
 ```
 出力:
 ```
@@ -113,7 +113,7 @@ message: hello
 invalid_key: invalid
 EOF
 
-echo "{{ message }}" | jiren - --data=data.yaml --strict
+echo "{{ message }}" | jiren --data=data.yaml --strict -
 ```
 出力:
 ```
@@ -127,7 +127,7 @@ jiren: error: the data file contains unknown variables: invalid_key
 
 コマンド:
 ```sh
-echo "{{ message }}, {{ name }}" | jiren - --required -- --message=hello
+echo "{{ message }}, {{ name }}" | jiren --required - -- --message=hello
 ```
 出力:
 ```
