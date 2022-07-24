@@ -58,7 +58,7 @@ You can use the help to check the variables defined in a template.
 
 Command:
 ```sh
-echo "{{ message }}, {{ name }}" | jiren - --help
+echo "{{ message }}, {{ name }}" | jiren --help -
 ```
 Outputs:
 ```
@@ -96,7 +96,7 @@ greeting:
   name: world
 EOF
 
-echo "{{ greeting.message }}, {{ greeting.name }}" | jiren - --data=data.yaml
+echo "{{ greeting.message }}, {{ greeting.name }}" | jiren --data=data.yaml -
 ```
 Outputs:
 ```
@@ -115,7 +115,7 @@ message: hello
 invalid_key: invalid
 EOF
 
-echo "{{ message }}" | jiren - --data=data.yaml --strict
+echo "{{ message }}" | jiren --data=data.yaml --strict -
 ```
 Outputs:
 ```
@@ -129,7 +129,7 @@ When using the `--required` option, you must specify values for all variables.
 
 Command:
 ```sh
-echo "{{ message }}, {{ name }}" | jiren - --required -- --message=hello
+echo "{{ message }}, {{ name }}" | jiren --required - -- --message=hello
 ```
 Outputs:
 ```
