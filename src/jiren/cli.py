@@ -1,4 +1,5 @@
 import argparse
+import logging
 import sys
 
 import yaml
@@ -16,6 +17,9 @@ def main():
         "-V", "--version", action="store_true", help="Show the version and exit."
     )
     parser.add_argument(
+        "--debug", action="store_true", help="Enable log output for debugging."
+    )
+    parser.add_argument(
         "--required",
         action="store_true",
         help="A specific value must be provided for each variable.",
@@ -30,7 +34,7 @@ def main():
         "--input",
         type=argparse.FileType("r"),
         help=(
-            "Deprecated. Use the template argument instead. "
+            "Deprecated. Use template argument instead. "
             'An input template file path. If "-" is provided, use stdin.'
         ),
     )
@@ -51,11 +55,16 @@ def main():
     )
     args = parser.parse_args()
 
+    logging.basicConfig(level=logging.DEBUG if args.debug else logging.INFO)
+    logger = logging.getLogger(__name__)
+    logger.debug("arguments: %s", args)
+
     template_source = None
     variable_options = args.variables
     # If the deprecated input option is used, the template argument is considered to be
     # the first of the variables argument.
     if args.input:
+        logger.warning("--input option is deprecated. Use template argument instead.")
         template_source = args.input.read()
         if args.template is not None:
             variable_options = [args.template]
@@ -71,10 +80,12 @@ def main():
 
     template = None
     if template_source is not None:
+        logger.debug("template: %s", template_source)
         template = Template(template_source)
         for v in template.variables:
             sanitized_name = v.replace("_", "-").strip("-")
             variable_group.add_argument(f"--{sanitized_name}", dest=v)
+        logger.debug("variables in the template: %s", sorted(template.variables))
 
     if args.help:
         parser.print_help()
@@ -89,27 +100,35 @@ def main():
         parser.error("the following arguments are required: --input")
 
     # Load variables contained in the data file. Must be in dictionary format.
-    provided_data = yaml.safe_load(args.data) if args.data else {}
-    if not isinstance(provided_data, dict):
-        parser.error(f"the data file must have at least one key: {args.data.name}")
+    provided_data = {}
+    if args.data:
+        provided_data = yaml.safe_load(args.data)
+        if not isinstance(provided_data, dict):
+            parser.error(f"the data file must have at least one key: {args.data.name}")
+    logger.debug("variables from the data file: %s", provided_data)
+
+    # Load variables from command line arguments.
+    variable_args = variable_parser.parse_args(variable_options)
+    variables = {k: v for k, v in vars(variable_args).items() if v is not None}
+    logger.debug("variables from command line: %s", variables)
 
     # In strict mode, exit if any variables are not present in the template.
     unknown_variables = set(provided_data.keys()) - template.variables
+    logger.debug(
+        "variables not presented in the template: %s", sorted(unknown_variables)
+    )
     if args.strict and unknown_variables:
         parser.error(
             "the data file contains unknown variables: "
             f"{', '.join(sorted(unknown_variables))}"
         )
 
-    # Load variables from command line arguments.
-    variable_args = variable_parser.parse_args(variable_options)
-    variables = {k: v for k, v in vars(variable_args).items() if v is not None}
-
     # Merge variables in data files and command line arguments.
     provided_data.update(variables)
 
-    # In required mode, exit if a variable in the template is not provided.
+    # In required mode, exit if any variables in the template are not provided.
     missing_variables = template.variables - set(provided_data.keys())
+    logger.debug("variables not provided by anywhere: %s", sorted(missing_variables))
     if args.required and missing_variables:
         parser.error(
             "the following variables are required: "
