@@ -6,29 +6,46 @@ on:
   pull_request:
 
 jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install poetry
+        run: pipx install poetry
+
+      - name: Build
+        run: poetry build
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: packages
+          path: ./dist
+
   test:
+    needs: build
     runs-on: ubuntu-latest
     strategy:
       matrix:
         python-version: ["3.7", "3.8", "3.9", "3.10"]
     steps:
-      - uses: actions/checkout@v3
-      - name: Install poetry
-        run: pipx install poetry
       - name: Set up Python ${{ matrix.python-version }}
-        id: setup-python
         uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
-          cache: poetry
+          cache: pip
 
-      - name: Install library
+      - name: Download artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: packages
+
+      - name: Install dependencies
         run: |
-          poetry env use ${{ steps.setup-python.outputs.python-version }}
-          poetry install --no-interaction
+          pip install "./dist/jiren-*-py3-none-any.whl[test]"
 
       - name: Test
-        run: poetry run make test
+        run: make test
 
       - name: Upload coverage reports
         uses: codecov/codecov-action@v3
