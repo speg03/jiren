@@ -44,7 +44,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install "./dist/jiren-*-py3-none-any.whl[test]"
+          pip install --find-links=./dist "jiren[test]"
 
       - name: Test
         run: make test
