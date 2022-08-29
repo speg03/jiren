@@ -45,8 +45,8 @@ test = [
 jiren = "jiren.cli:main"
 
 [project.urls]
-homepage = "https://github.com/speg03/jiren"
-repository = "https://github.com/speg03/jiren"
+Homepage = "https://github.com/speg03/jiren"
+Repository = "https://github.com/speg03/jiren"
 
 [tool.isort]
 profile = "black"
