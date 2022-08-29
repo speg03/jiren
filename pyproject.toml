@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "jiren"
-version = "0.6.0"
+version = "0.6.1"
 description = "jinja2 template renderer"
 authors = [
     { name = "Takahiro Yano", email = "speg03@gmail.com" },
