@@ -7,6 +7,7 @@ clean:
 lint:
 	pre-commit run --all-files
 test:
-	pytest -v ./tests
-build: lint test
-	poetry build
+	python3 -m pytest -v ./tests
+build:
+	python3 -m pip install build
+	python3 -m build

@@ -10,11 +10,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Install poetry
-        run: pipx install poetry
 
       - name: Build
-        run: poetry build
+        run: make build
 
       - name: Upload artifact
         uses: actions/upload-artifact@v3
@@ -36,7 +34,7 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
           cache: pip
-          cache-dependency-path: ./poetry.lock
+          cache-dependency-path: ./pyproject.toml
 
       - name: Download artifact
         uses: actions/download-artifact@v3
