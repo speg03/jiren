@@ -9,6 +9,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: "3.x"
+          cache: pip
+          cache-dependency-path: "**/pyproject.toml"
 
       - name: Build
         run: make build
