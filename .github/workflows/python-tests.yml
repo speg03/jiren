@@ -10,6 +10,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: "3.x"
+          cache: pip
+          cache-dependency-path: "**/pyproject.toml"
 
       - name: Build
         run: make build
@@ -34,7 +39,7 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
           cache: pip
-          cache-dependency-path: ./pyproject.toml
+          cache-dependency-path: "**/pyproject.toml"
 
       - name: Download artifact
         uses: actions/download-artifact@v3
@@ -44,7 +49,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install "$(ls ./dist/jiren-*-py3-none-any.whl)[test]"
+          python3 -m pip install "$(ls ./dist/*-py3-none-any.whl | tail -1)[test]"
 
       - name: Test
         run: make test
