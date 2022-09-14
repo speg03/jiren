@@ -2,7 +2,7 @@ name: Python Tests
 
 on:
   push:
-    branches: [main]
+    tags: ["v[0-9]+.[0-9]+.[0-9]+**"]
   pull_request:
 
 jobs:
@@ -55,3 +55,36 @@ jobs:
 
       - name: Upload coverage reports
         uses: codecov/codecov-action@v3
+
+  publish:
+    needs: test
+    if: github.ref_type == 'tag'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: packages
+          path: ./dist
+
+      - name: Publish
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          password: ${{ secrets.PYPI_TOKEN }}
+
+  release:
+    needs: test
+    if: github.ref_type == 'tag'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/github-script@v6
+        name: Release
+        with:
+          script: |
+            github.rest.repos.createRelease({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              tag_name: "${{ github.ref_name }}",
+              name: "${{ github.ref_name }}",
+              generate_release_notes: true
+            })
