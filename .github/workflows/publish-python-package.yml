@@ -1,8 +1,12 @@
 name: Publish Python Package
 
 on:
-  release:
-    types: [published]
+  push:
+    tags: ["v[0-9]+.[0-9]+.[0-9]+**"]
+
+concurrency:
+  group: packages
+  cancel-in-progress: true
 
 jobs:
   build-and-publish:
@@ -22,3 +26,18 @@ jobs:
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           password: ${{ secrets.PYPI_TOKEN }}
+
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/github-script@v6
+        name: Release
+        with:
+          script: |
+            github.rest.repos.createRelease({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              tag_name: "${{ github.ref_name }}",
+              name: "${{ github.ref_name }}",
+              generate_release_notes: true
+            })
