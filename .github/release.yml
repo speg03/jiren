@@ -3,13 +3,13 @@ changelog:
     - title: New Features
       labels:
         - enhancement
-    - title: Bug fixes
+    - title: Bug Fixes
       labels:
         - bug
     - title: Breaking Changes
       labels:
         - breaking change
-    - title: Update dependencies
+    - title: Update Dependencies
       labels:
         - dependencies
     - title: Documentation
