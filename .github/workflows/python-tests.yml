@@ -73,12 +73,12 @@ jobs:
           password: ${{ secrets.PYPI_TOKEN }}
 
   release:
-    needs: test
+    needs: publish
     if: github.ref_type == 'tag'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/github-script@v6
-        name: Release
+      - name: Release
+        uses: actions/github-script@v6
         with:
           script: |
             github.rest.repos.createRelease({
