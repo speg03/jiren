@@ -2,7 +2,7 @@ import io
 
 import pytest
 
-from jiren import versions
+from jiren import __version__
 from jiren.cli import main
 
 
@@ -98,7 +98,7 @@ def test_main_version(monkeypatch):
         with pytest.raises(SystemExit):
             main()
 
-    assert f"jiren, version {versions.jiren_version}" in stdout.getvalue()
+    assert stdout.getvalue() == f"{__version__}\n"
 
 
 def test_main_with_template_file(monkeypatch, tmp_path):

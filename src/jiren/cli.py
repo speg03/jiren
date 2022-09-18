@@ -4,8 +4,8 @@ import sys
 
 import yaml
 
+from . import __version__
 from .template import Template
-from .versions import jinja2_version, jiren_version
 
 
 def main():
@@ -93,8 +93,7 @@ def main():
         variable_parser.print_help()
         parser.exit(0)
     elif args.version:
-        print(f"jiren, version {jiren_version}")
-        print(f"jinja2, version {jinja2_version}")
+        print(__version__)
         parser.exit(0)
     elif template is None:
         parser.error("the following arguments are required: --input")

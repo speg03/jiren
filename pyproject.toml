@@ -1,10 +1,9 @@
 [build-system]
-requires = ["hatchling"]
+requires = ["hatchling", "hatch-vcs"]
 build-backend = "hatchling.build"
 
 [project]
 name = "jiren"
-version = "0.7.3"
 description = "jinja2 template renderer"
 authors = [
     { name = "Takahiro Yano", email = "speg03@gmail.com" },
@@ -28,11 +27,12 @@ classifiers = [
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
 
+dynamic = ["version"]
+
 requires-python = ">=3.7"
 dependencies = [
     "jinja2>=2.11",
     "pyyaml>=5.3",
-    "importlib-metadata>=1.4; python_version < '3.8'",
 ]
 
 [project.optional-dependencies]
@@ -47,6 +47,12 @@ jiren = "jiren.cli:main"
 [project.urls]
 Homepage = "https://github.com/speg03/jiren"
 Repository = "https://github.com/speg03/jiren"
+
+[tool.hatch.version]
+source = "vcs"
+
+[tool.hatch.build.hooks.vcs]
+version-file = "src/jiren/versions.py"
 
 [tool.isort]
 profile = "black"
