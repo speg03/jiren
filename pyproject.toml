@@ -1,5 +1,5 @@
 [build-system]
-requires = ["hatchling", "hatch-vcs"]
+requires = ["hatchling", "hatch-vcs", "hatch-requirements-txt"]
 build-backend = "hatchling.build"
 
 [project]
@@ -12,6 +12,7 @@ authors = [
 readme = "README.md"
 license = "MIT"
 
+requires-python = ">=3.7"
 keywords = ["jinja2", "template", "render", "text", "preprocessing"]
 classifiers = [
     "Development Status :: 4 - Beta",
@@ -27,13 +28,7 @@ classifiers = [
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
 
-dynamic = ["version"]
-
-requires-python = ">=3.7"
-dependencies = [
-    "jinja2>=2.11",
-    "pyyaml>=5.3",
-]
+dynamic = ["version", "dependencies"]
 
 [project.optional-dependencies]
 test = [
@@ -53,6 +48,9 @@ source = "vcs"
 
 [tool.hatch.build.hooks.vcs]
 version-file = "src/jiren/versions.py"
+
+[tool.hatch.metadata.hooks.requirements_txt]
+filename = "requirements.txt"
 
 [tool.isort]
 profile = "black"
