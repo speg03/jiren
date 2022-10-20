@@ -1,6 +1,7 @@
 import argparse
 import logging
 import sys
+import warnings
 
 import yaml
 
@@ -64,7 +65,10 @@ def main():
     # If the deprecated input option is used, the template argument is considered to be
     # the first of the variables argument.
     if args.input:
-        logger.warning("--input option is deprecated. Use template argument instead.")
+        warnings.warn(
+            "`--input` option is deprecated. Use `template` argument instead.",
+            FutureWarning,
+        )
         template_source = args.input.read()
         if args.template is not None:
             variable_options = [args.template]
