@@ -5,9 +5,7 @@ build-backend = "hatchling.build"
 [project]
 name = "jiren"
 description = "jinja2 template renderer"
-authors = [
-    { name = "Takahiro Yano", email = "speg03@gmail.com" },
-]
+authors = [{ name = "Takahiro Yano", email = "speg03@gmail.com" }]
 
 readme = "README.md"
 license = "MIT"
@@ -31,10 +29,7 @@ classifiers = [
 dynamic = ["version", "dependencies"]
 
 [project.optional-dependencies]
-test = [
-    "pytest",
-    "pytest-cov",
-]
+test = ["pytest", "pytest-cov"]
 
 [project.scripts]
 jiren = "jiren.cli:main"
