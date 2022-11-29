@@ -1,5 +1,5 @@
 [build-system]
-requires = ["hatchling", "hatch-vcs", "hatch-requirements-txt"]
+requires = ["hatchling", "hatch-vcs"]
 build-backend = "hatchling.build"
 
 [project]
@@ -26,7 +26,12 @@ classifiers = [
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
 
-dynamic = ["version", "dependencies", "optional-dependencies"]
+dynamic = ["version"]
+
+dependencies = ["jinja2>=2.11", "pyyaml>=5.3"]
+
+[project.optional-dependencies]
+tests = ["pytest", "pytest-cov"]
 
 [project.scripts]
 jiren = "jiren.cli:main"
@@ -40,12 +45,6 @@ source = "vcs"
 
 [tool.hatch.build.hooks.vcs]
 version-file = "src/jiren/_version.py"
-
-[tool.hatch.metadata.hooks.requirements_txt]
-files = ["requirements/main.txt"]
-
-[tool.hatch.metadata.hooks.requirements_txt.optional-dependencies]
-tests = ["requirements/tests.txt"]
 
 [tool.isort]
 profile = "black"

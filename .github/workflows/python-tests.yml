@@ -16,7 +16,6 @@ jobs:
         with:
           python-version: "3.x"
           cache: pip
-          cache-dependency-path: requirements/*.txt
 
       - name: Build
         run: make build
@@ -41,7 +40,6 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
           cache: pip
-          cache-dependency-path: requirements/*.txt
 
       - name: Download artifact
         uses: actions/download-artifact@v3
