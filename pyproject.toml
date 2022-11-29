@@ -26,7 +26,10 @@ classifiers = [
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
 
-dynamic = ["version", "dependencies", "optional-dependencies"]
+dynamic = ["version", "dependencies"]
+
+[project.optional-dependencies]
+test = ["pytest", "pytest-cov"]
 
 [project.scripts]
 jiren = "jiren.cli:main"
@@ -42,10 +45,7 @@ source = "vcs"
 version-file = "src/jiren/_version.py"
 
 [tool.hatch.metadata.hooks.requirements_txt]
-files = ["requirements/main.txt"]
-
-[tool.hatch.metadata.hooks.requirements_txt.optional-dependencies]
-tests = ["requirements/tests.txt"]
+filename = "requirements.txt"
 
 [tool.isort]
 profile = "black"
