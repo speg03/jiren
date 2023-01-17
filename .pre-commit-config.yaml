@@ -8,6 +8,6 @@ repos:
     hooks:
       - id: isort
   - repo: https://github.com/charliermarsh/ruff-pre-commit
-    rev: v0.0.216
+    rev: v0.0.223
     hooks:
       - id: ruff
