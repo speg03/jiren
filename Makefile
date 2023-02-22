@@ -1,13 +1,14 @@
-.PHONY: all clean build lint test
+.PHONY: all clean requirements dist lint test
 
-all: build
+all: dist
 clean:
 	rm -rf ./dist
 
+requirements:
+	pip-compile --upgrade --output-file=./requirements.txt ./pyproject.toml
 lint:
 	pre-commit run --all-files
 test:
 	pytest -v ./tests
-build:
-	python3 -m pip install build
+dist:
 	python3 -m build
