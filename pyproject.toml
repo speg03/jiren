@@ -31,7 +31,7 @@ dynamic = ["version"]
 dependencies = ["jinja2>=2.11", "pyyaml>=5.3"]
 
 [project.optional-dependencies]
-tests = ["pytest", "pytest-cov"]
+test = ["pytest", "pytest-cov"]
 
 [project.scripts]
 jiren = "jiren.cli:main"
@@ -45,9 +45,6 @@ source = "vcs"
 
 [tool.hatch.build.hooks.vcs]
 version-file = "src/jiren/_version.py"
-
-[tool.isort]
-profile = "black"
 
 [tool.pytest.ini_options]
 addopts = "--cov=jiren --cov-report=term-missing --cov-report=xml"

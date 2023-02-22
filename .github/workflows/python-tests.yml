@@ -17,8 +17,11 @@ jobs:
           python-version: "3.x"
           cache: pip
 
+      - name: Install dependencies
+        run: python3 -m pip install build
+
       - name: Build
-        run: make build
+        run: make dist
 
       - name: Upload artifact
         uses: actions/upload-artifact@v3
@@ -48,7 +51,7 @@ jobs:
           path: ./dist
 
       - name: Install dependencies
-        run: python3 -m pip install "$(ls ./dist/*-py3-none-any.whl | tail -1)[tests]"
+        run: python3 -m pip install "$(find ./dist -name '*-py3-none-any.whl' | tail -1)[test]"
 
       - name: Test
         run: make test
