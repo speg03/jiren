@@ -2,8 +2,10 @@ name: Python Tests
 
 on:
   push:
-    tags: ["v[0-9]+.[0-9]+.[0-9]+**"]
+    branches: [main]
   pull_request:
+  release:
+    types: [published]
 
 jobs:
   build:
@@ -61,7 +63,12 @@ jobs:
 
   publish:
     needs: test
-    if: github.ref_type == 'tag'
+    if: github.event_name == 'release' && github.event.action == 'published'
+    permissions:
+      id-token: write
+    environment:
+      name: release
+      url: https://pypi.org/project/${{ github.event.repository.name }}/
     runs-on: ubuntu-latest
     steps:
       - name: Download artifact
@@ -72,22 +79,3 @@ jobs:
 
       - name: Publish
         uses: pypa/gh-action-pypi-publish@release/v1
-        with:
-          password: ${{ secrets.PYPI_TOKEN }}
-
-  release:
-    needs: publish
-    if: github.ref_type == 'tag'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Release
-        uses: actions/github-script@v6
-        with:
-          script: |
-            github.rest.repos.createRelease({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              tag_name: "${{ github.ref_name }}",
-              name: "${{ github.ref_name }}",
-              generate_release_notes: true
-            })
