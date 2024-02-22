@@ -49,3 +49,6 @@ version-file = "src/jiren/_version.py"
 
 [tool.pytest.ini_options]
 addopts = "--cov=jiren --cov-report=term-missing --cov-report=xml"
+
+[tool.coverage.run]
+omit = ["src/jiren/_version.py"]

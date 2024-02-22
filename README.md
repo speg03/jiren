@@ -1,6 +1,6 @@
 # jiren
 
-jiren is an application that generates text from a template. The format of the template is based on jinja2.
+*jiren* is an application that generates text from a template. The format of the template is based on jinja2.
 
 [![PyPI](https://img.shields.io/pypi/v/jiren)](https://pypi.org/project/jiren/)
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/jiren)](https://pypi.org/project/jiren/)
@@ -8,12 +8,10 @@ jiren is an application that generates text from a template. The format of the t
 [![codecov](https://codecov.io/gh/speg03/jiren/branch/main/graph/badge.svg?token=bFdpze6ELR)](https://codecov.io/gh/speg03/jiren)
 [![pre-commit.ci status](https://results.pre-commit.ci/badge/github/speg03/jiren/main.svg)](https://results.pre-commit.ci/latest/github/speg03/jiren/main)
 
-Read this in Japanese: [日本語](https://github.com/speg03/jiren/blob/main/README.ja.md)
-
 ## Installation
 
-```sh
-pip install jiren
+```console
+$ pip install jiren
 ```
 
 ## Usage
@@ -24,27 +22,16 @@ Generate text from a template using the `jiren` command. This command can read a
 
 An example of reading a template from stdin:
 
-Command:
-```sh
-echo "hello, {{ name }}" | jiren - -- --name=world
-```
-Outputs:
-```
+```console
+$ echo "hello, {{ name }}" | jiren - -- --name=world
 hello, world
 ```
 
 An example of reading a template from a file:
 
-Command:
-```sh
-cat <<EOF >template.j2
-hello, {{ name }}
-EOF
-
-jiren template.j2 -- --name=world
-```
-Outputs:
-```
+```console
+$ echo "hello, {{ name }}" >template.j2
+$ jiren template.j2 -- --name=world
 hello, world
 ```
 
@@ -57,12 +44,8 @@ If you want to know more about template format, please refer to jinja2 document 
 
 You can use the help to check the variables defined in a template.
 
-Command:
-```sh
-echo "{{ message }}, {{ name }}" | jiren --help -
-```
-Outputs:
-```
+```console
+$ echo "{{ message }}, {{ name }}" | jiren --help -
 ... (omitted)
 
 variables:
