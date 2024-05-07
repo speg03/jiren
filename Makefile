@@ -7,7 +7,7 @@ clean:
 
 .PHONY: requirements
 requirements:
-	pip-compile --upgrade --output-file=./requirements.txt ./pyproject.toml
+	uv pip compile -U pyproject.toml -o requirements.txt
 
 .PHONY: lint
 lint:
