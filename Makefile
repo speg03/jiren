@@ -7,6 +7,7 @@ clean:
 
 .PHONY: requirements
 requirements:
+	uv lock -U
 	uv pip compile -U pyproject.toml -o requirements.txt
 
 .PHONY: lint
