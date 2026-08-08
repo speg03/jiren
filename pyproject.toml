@@ -1,9 +1,6 @@
-[build-system]
-requires = ["hatchling", "hatch-vcs"]
-build-backend = "hatchling.build"
-
 [project]
 name = "jiren"
+version = "0.0.0.dev0"
 description = "jinja2 template renderer"
 authors = [{ name = "Takahiro Yano", email = "speg03@gmail.com" }]
 
@@ -27,12 +24,10 @@ classifiers = [
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
 
-dynamic = ["version"]
-
 dependencies = ["jinja2>=2.11", "pyyaml>=5.3"]
 
-[project.optional-dependencies]
-test = ["pytest", "pytest-cov"]
+[dependency-groups]
+dev = ["pre-commit>=4.6.1", "pytest>=9.1.1", "pytest-cov>=7.1.0"]
 
 [project.scripts]
 jiren = "jiren.cli:main"
@@ -41,14 +36,9 @@ jiren = "jiren.cli:main"
 Homepage = "https://github.com/speg03/jiren"
 Repository = "https://github.com/speg03/jiren"
 
-[tool.hatch.version]
-source = "vcs"
+[tool.pytest]
+addopts = ["--cov=jiren", "--cov-report=term-missing", "--cov-report=xml"]
 
-[tool.hatch.build.hooks.vcs]
-version-file = "src/jiren/_version.py"
-
-[tool.pytest.ini_options]
-addopts = "--cov=jiren --cov-report=term-missing --cov-report=xml"
-
-[tool.coverage.run]
-omit = ["src/jiren/_version.py"]
+[build-system]
+requires = ["uv_build >= 0.12.0, <0.13.0"]
+build-backend = "uv_build"
