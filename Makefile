@@ -5,19 +5,22 @@ all: dist
 clean:
 	rm -rf ./dist
 
-.PHONY: requirements
-requirements:
-	uv lock -U
-	uv pip compile -U pyproject.toml -o requirements.txt
+.PHONY: install
+install:
+	uv sync --dev
+
+.PHONY: deps
+deps:
+	uv lock --upgrade
 
 .PHONY: lint
 lint:
-	pre-commit run --all-files
+	uv run pre-commit run --all-files
 
 .PHONY: test
 test:
-	pytest -v ./tests
+	uv run pytest -v ./tests
 
 .PHONY: dist
 dist:
-	python3 -m build
+	uv build
