@@ -2,10 +2,8 @@ import argparse
 import logging
 import sys
 
-import yaml
-
 from . import __version__
-from .template import Template
+from .renderer import InvalidDataError, RenderError, render_template, template_variables
 
 
 def main():
@@ -67,15 +65,20 @@ def main():
         with open(args.template, "r") as f:
             template_source = f.read()
 
+    data_source = None
+    if args.data:
+        with open(args.data, "r") as f:
+            data_source = f.read()
+
     variable_parser = argparse.ArgumentParser(add_help=False, usage=argparse.SUPPRESS)
     variable_group = variable_parser.add_argument_group("variables")
 
     logger.debug("template: %s", template_source)
-    template = Template(template_source)
-    for v in template.variables:
+    variables_in_template = template_variables(template_source)
+    for v in variables_in_template:
         sanitized_name = v.replace("_", "-").strip("-")
         variable_group.add_argument(f"--{sanitized_name}", dest=v)
-    logger.debug("variables in the template: %s", sorted(template.variables))
+    logger.debug("variables in the template: %s", sorted(variables_in_template))
 
     if args.help:
         parser.print_help()
@@ -83,42 +86,22 @@ def main():
         variable_parser.print_help()
         parser.exit(0)
 
-    # Load variables contained in the data file. Must be in dictionary format.
-    provided_data = {}
-    if args.data:
-        with open(args.data, "r") as f:
-            provided_data = yaml.safe_load(f)
-        if not isinstance(provided_data, dict):
-            parser.error(f"the data file must have at least one key: {args.data}")
-    logger.debug("variables from the data file: %s", provided_data)
-
     # Load variables from command line arguments.
     variable_args = variable_parser.parse_args(variable_options)
     variables = {k: v for k, v in vars(variable_args).items() if v is not None}
     logger.debug("variables from command line: %s", variables)
 
-    # In strict mode, exit if any variables are not present in the template.
-    unknown_variables = set(provided_data.keys()) - template.variables
-    logger.debug(
-        "variables not presented in the template: %s", sorted(unknown_variables)
-    )
-    if args.strict and unknown_variables:
-        parser.error(
-            "the data file contains unknown variables: "
-            f"{', '.join(sorted(unknown_variables))}"
+    try:
+        rendered_text = render_template(
+            template_source,
+            data_source=data_source,
+            variables=variables,
+            strict=args.strict,
+            required=args.required,
         )
+    except InvalidDataError as error:
+        parser.error(f"{error}: {args.data}")
+    except RenderError as error:
+        parser.error(str(error))
 
-    # Merge variables in data files and command line arguments.
-    provided_data.update(variables)
-
-    # In required mode, exit if any variables in the template are not provided.
-    missing_variables = template.variables - set(provided_data.keys())
-    logger.debug("variables not provided by anywhere: %s", sorted(missing_variables))
-    if args.required and missing_variables:
-        parser.error(
-            "the following variables are required: "
-            f"{', '.join(sorted(missing_variables))}"
-        )
-
-    rendered_text = template.render(provided_data)
     print(rendered_text)
