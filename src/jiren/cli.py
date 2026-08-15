@@ -62,13 +62,19 @@ def main():
     if args.template is None or args.template == "-":
         template_source = sys.stdin.read()
     else:
-        with open(args.template, "r") as f:
-            template_source = f.read()
+        try:
+            with open(args.template, "r") as f:
+                template_source = f.read()
+        except OSError:
+            parser.error(f"cannot read template file: {args.template}")
 
     data_source = None
     if args.data:
-        with open(args.data, "r") as f:
-            data_source = f.read()
+        try:
+            with open(args.data, "r") as f:
+                data_source = f.read()
+        except OSError:
+            parser.error(f"cannot read data file: {args.data}")
 
     variable_parser = argparse.ArgumentParser(add_help=False, usage=argparse.SUPPRESS)
     variable_group = variable_parser.add_argument_group("variables")

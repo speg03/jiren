@@ -47,6 +47,35 @@ def test_main_reads_template_and_data_files(monkeypatch, tmp_path):
     assert stdout.getvalue() == "hello, world\n"
 
 
+def test_main_reports_unreadable_template_file(monkeypatch, tmp_path):
+    template_file = tmp_path / "missing.jinja"
+    stderr = io.StringIO()
+
+    monkeypatch.setattr("sys.argv", ["jiren", str(template_file)])
+    monkeypatch.setattr("sys.stderr", stderr)
+
+    with pytest.raises(SystemExit) as error:
+        main()
+
+    assert error.value.code == 2
+    assert f"cannot read template file: {template_file}" in stderr.getvalue()
+
+
+def test_main_reports_unreadable_data_file(monkeypatch, tmp_path):
+    data_file = tmp_path / "missing.yaml"
+    stderr = io.StringIO()
+
+    monkeypatch.setattr("sys.argv", ["jiren", f"--data={data_file}", "-"])
+    monkeypatch.setattr("sys.stdin", io.StringIO("{{ greeting }}"))
+    monkeypatch.setattr("sys.stderr", stderr)
+
+    with pytest.raises(SystemExit) as error:
+        main()
+
+    assert error.value.code == 2
+    assert f"cannot read data file: {data_file}" in stderr.getvalue()
+
+
 def test_main_help_with_stdin_template_includes_variable_options(monkeypatch):
     stdout = io.StringIO()
 
