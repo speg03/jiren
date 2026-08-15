@@ -32,7 +32,6 @@ def main():
     parser.add_argument(
         "-d",
         "--data",
-        type=argparse.FileType("r"),
         help="A structured data file path. Accepts JSON or YAML files.",
     )
     parser.add_argument(
@@ -87,9 +86,10 @@ def main():
     # Load variables contained in the data file. Must be in dictionary format.
     provided_data = {}
     if args.data:
-        provided_data = yaml.safe_load(args.data)
+        with open(args.data, "r") as f:
+            provided_data = yaml.safe_load(f)
         if not isinstance(provided_data, dict):
-            parser.error(f"the data file must have at least one key: {args.data.name}")
+            parser.error(f"the data file must have at least one key: {args.data}")
     logger.debug("variables from the data file: %s", provided_data)
 
     # Load variables from command line arguments.
