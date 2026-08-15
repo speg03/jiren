@@ -54,7 +54,7 @@ variables from a template provided through stdin.
 
 ### Default values
 
-You can set default values for variables for which no values was specified. This is based on the Jinja specification.
+You can set default values for variables for which no values were specified. This is based on the Jinja specification.
 
 Command:
 
