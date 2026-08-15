@@ -1,6 +1,6 @@
 # jiren
 
-*jiren* is an application that generates text from a template. The format of the template is based on jinja2.
+_jiren_ is an application that generates text from a template. The format of the template is based on jinja2.
 
 [![PyPI](https://img.shields.io/pypi/v/jiren)](https://pypi.org/project/jiren/)
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/jiren)](https://pypi.org/project/jiren/)
@@ -23,7 +23,7 @@ Generate text from a template using the `jiren` command. This command can read a
 An example of reading a template from stdin:
 
 ```console
-$ echo "hello, {{ name }}" | jiren - -- --name=world
+$ echo "hello, {{ name }}" | jiren -- --name=world
 hello, world
 ```
 
@@ -39,7 +39,6 @@ In this example, the template contains a variable called `name`. You can set val
 
 If you want to know more about template format, please refer to jinja2 document ( http://jinja.pocoo.org/ ).
 
-
 ### Variables in a template
 
 You can use the help to check the variables defined in a template.
@@ -53,26 +52,32 @@ variables:
   --message MESSAGE
 ```
 
+Use `jiren --help` without a template argument to display the general usage
+without reading stdin. Use `-` explicitly when the help should include
+variables from a template provided through stdin.
 
 ### Default values
 
 You can set default values for variables for which no values was specified. This is based on the jinja2 specification.
 
 Command:
+
 ```sh
 echo "{{ message }}, {{ name | default('world') }}" | jiren - -- --message=hello
 ```
+
 Outputs:
+
 ```
 hello, world
 ```
-
 
 ### Option: data
 
 You can pass a file with variables defined structurally using the `--data` option.
 
 Command:
+
 ```sh
 cat <<EOF >data.yaml
 greeting:
@@ -82,17 +87,19 @@ EOF
 
 echo "{{ greeting.message }}, {{ greeting.name }}" | jiren --data=data.yaml -
 ```
+
 Outputs:
+
 ```
 hello, world
 ```
-
 
 ### Option: strict
 
 If the `--strict` option is used with the `--data` option, all variables in the data file must be used in the template.
 
 Command:
+
 ```sh
 cat <<EOF >data.yaml
 message: hello
@@ -101,21 +108,25 @@ EOF
 
 echo "{{ message }}" | jiren --data=data.yaml --strict -
 ```
+
 Outputs:
+
 ```
 jiren: error: the data file contains unknown variables: invalid_key
 ```
-
 
 ### Option: required
 
 When using the `--required` option, you must specify values for all variables.
 
 Command:
+
 ```sh
 echo "{{ message }}, {{ name }}" | jiren --required - -- --message=hello
 ```
+
 Outputs:
+
 ```
 jiren: error: the following variables are required: name
 ```

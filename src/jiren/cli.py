@@ -1,7 +1,6 @@
 import argparse
 import logging
 import sys
-import warnings
 
 import yaml
 
@@ -31,76 +30,59 @@ def main():
         help="All variables contained in the data file must be used in the template.",
     )
     parser.add_argument(
-        "-i",
-        "--input",
-        type=argparse.FileType("r"),
-        help=(
-            "Deprecated. Use template argument instead. "
-            'An input template file path. If "-" is provided, use stdin.'
-        ),
-    )
-    parser.add_argument(
         "-d",
         "--data",
         type=argparse.FileType("r"),
         help="A structured data file path. Accepts JSON or YAML files.",
     )
-    # TODO: Change the template argument to FileType when removing the input option.
     parser.add_argument(
         "template",
         nargs="?",
-        help='A template file path. If "-" is provided, use stdin.',
+        help='A template file path. Omit it or provide "-" to use stdin.',
     )
-    parser.add_argument(
-        "variables", nargs="*", help='"--" followed by options for variables.'
-    )
-    args = parser.parse_args()
+
+    command_line_args = sys.argv[1:]
+    if "--" in command_line_args:
+        separator_index = command_line_args.index("--")
+        parser_args = command_line_args[:separator_index]
+        variable_options = command_line_args[separator_index + 1 :]
+    else:
+        parser_args = command_line_args
+        variable_options = []
+    args = parser.parse_args(parser_args)
 
     logging.basicConfig(level=logging.DEBUG if args.debug else logging.INFO)
     logger = logging.getLogger(__name__)
     logger.debug("arguments: %s", args)
 
-    template_source = None
-    variable_options = args.variables
-    # If the deprecated input option is used, the template argument is considered to be
-    # the first of the variables argument.
-    if args.input:
-        warnings.warn(
-            "`--input` option is deprecated. Use `template` argument instead.",
-            FutureWarning,
-        )
-        template_source = args.input.read()
-        if args.template is not None:
-            variable_options = [args.template]
-            variable_options.extend(args.variables)
-    elif args.template == "-":
+    if args.template is None and args.help:
+        parser.print_help()
+        parser.exit(0)
+    elif args.version:
+        print(__version__)
+        parser.exit(0)
+
+    if args.template is None or args.template == "-":
         template_source = sys.stdin.read()
-    elif args.template:
+    else:
         with open(args.template, "r") as f:
             template_source = f.read()
 
     variable_parser = argparse.ArgumentParser(add_help=False, usage=argparse.SUPPRESS)
     variable_group = variable_parser.add_argument_group("variables")
 
-    template = None
-    if template_source is not None:
-        logger.debug("template: %s", template_source)
-        template = Template(template_source)
-        for v in template.variables:
-            sanitized_name = v.replace("_", "-").strip("-")
-            variable_group.add_argument(f"--{sanitized_name}", dest=v)
-        logger.debug("variables in the template: %s", sorted(template.variables))
+    logger.debug("template: %s", template_source)
+    template = Template(template_source)
+    for v in template.variables:
+        sanitized_name = v.replace("_", "-").strip("-")
+        variable_group.add_argument(f"--{sanitized_name}", dest=v)
+    logger.debug("variables in the template: %s", sorted(template.variables))
 
     if args.help:
         parser.print_help()
         print()
         variable_parser.print_help()
         parser.exit(0)
-    elif args.version:
-        print(__version__)
-        parser.exit(0)
-    elif template is None:
-        parser.error("the following arguments are required: --input")
 
     # Load variables contained in the data file. Must be in dictionary format.
     provided_data = {}

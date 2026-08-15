@@ -31,20 +31,9 @@ def test_main(monkeypatch, template, variables, expected):
     assert stdout.getvalue() == expected
 
 
-@pytest.mark.parametrize(
-    "template,variables,expected",
-    [
-        ("{{ greeting }}", "--greeting=hello", "hello\n"),
-        ("{{ greeting }}", "", "\n"),
-        ("{{ greeting | default('hi') }}", "", "hi\n"),
-        ("{{ __greeting__message__ }}", "--greeting--message=hello", "hello\n"),
-        ("hello", "", "hello\n"),
-        ("", "", "\n"),
-    ],
-)
-def test_main_with_input(monkeypatch, template, variables, expected):
-    command = f"jiren --input=- -- {variables}"
-    stdin = io.StringIO(template)
+def test_main_with_omitted_template(monkeypatch):
+    command = "jiren -- --greeting=hello"
+    stdin = io.StringIO("{{ greeting }}")
     stdout = io.StringIO()
 
     with monkeypatch.context() as m:
@@ -53,21 +42,24 @@ def test_main_with_input(monkeypatch, template, variables, expected):
         m.setattr("sys.stdout", stdout)
         main()
 
-    assert stdout.getvalue() == expected
+    assert stdout.getvalue() == "hello\n"
 
 
 def test_main_help(monkeypatch):
     command = "jiren --help"
+    stdin = io.StringIO("{{ greeting }}")
     stdout = io.StringIO()
 
     with monkeypatch.context() as m:
         m.setattr("sys.argv", command.split())
+        m.setattr("sys.stdin", stdin)
         m.setattr("sys.stdout", stdout)
 
         with pytest.raises(SystemExit):
             main()
 
     assert stdout.getvalue().startswith("usage:")
+    assert stdin.read() == "{{ greeting }}"
 
 
 def test_main_help_with_variables(monkeypatch):
@@ -220,20 +212,6 @@ def test_main_with_yaml_data_file_no_keys(monkeypatch, tmp_path):
             main()
 
     assert f"the data file must have at least one key: {data_file}" in stderr.getvalue()
-
-
-def test_main_with_no_inputs(monkeypatch):
-    command = "jiren"
-    stderr = io.StringIO()
-
-    with monkeypatch.context() as m:
-        m.setattr("sys.argv", command.split())
-        m.setattr("sys.stderr", stderr)
-
-        with pytest.raises(SystemExit):
-            main()
-
-    assert "the following arguments are required: --input" in stderr.getvalue()
 
 
 def test_main_with_unknown_variable(monkeypatch):
