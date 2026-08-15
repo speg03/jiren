@@ -1,44 +1,49 @@
 [project]
 name = "jiren"
 version = "0.0.0.dev0"
-description = "jinja2 template renderer"
+description = "Jinja template renderer"
 authors = [{ name = "Takahiro Yano", email = "speg03@gmail.com" }]
 
 readme = "README.md"
 license = "MIT"
 
 requires-python = ">=3.10"
-keywords = ["jinja2", "template", "render", "text", "preprocessing"]
+keywords = ["jinja", "preprocessing", "render", "template", "text"]
 classifiers = [
-    "Development Status :: 4 - Beta",
-    "Environment :: Console",
-    "Intended Audience :: Developers",
-    "License :: OSI Approved :: MIT License",
-    "Operating System :: OS Independent",
-    "Programming Language :: Python :: 3.10",
-    "Programming Language :: Python :: 3.11",
-    "Programming Language :: Python :: 3.12",
-    "Programming Language :: Python :: 3.13",
-    "Programming Language :: Python :: 3.14",
-    "Topic :: Software Development :: Pre-processors",
-    "Topic :: Software Development :: Libraries :: Python Modules",
+  "Development Status :: 4 - Beta",
+  "Environment :: Console",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
+  "Topic :: Software Development :: Libraries :: Python Modules",
+  "Topic :: Software Development :: Pre-processors",
 ]
 
 dependencies = ["jinja2>=2.11", "pyyaml>=5.3"]
-
-[dependency-groups]
-dev = ["pre-commit>=4.6.1", "pytest>=9.1.1", "pytest-cov>=7.1.0"]
-
-[project.scripts]
-jiren = "jiren.cli:main"
 
 [project.urls]
 Homepage = "https://github.com/speg03/jiren"
 Repository = "https://github.com/speg03/jiren"
 
-[tool.pytest]
-addopts = ["--cov=jiren", "--cov-report=term-missing", "--cov-report=xml"]
+[project.scripts]
+jiren = "jiren.cli:main"
+
+[dependency-groups]
+dev = [
+  { include-group = "docs" },
+  { include-group = "tests" },
+]
+docs = ["zensical>=0.0.54"]
+tests = ["pre-commit>=4.6.1", "pytest>=9.1.1", "pytest-cov>=7.1.0"]
 
 [build-system]
-requires = ["uv_build >= 0.12.0, <0.13.0"]
+requires = ["uv_build>=0.12.0,<0.13.0"]
 build-backend = "uv_build"
+
+[tool.pytest]
+addopts = ["--cov=jiren", "--cov-report=term-missing", "--cov-report=xml"]
