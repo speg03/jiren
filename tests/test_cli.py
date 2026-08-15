@@ -94,7 +94,7 @@ def test_main_version(monkeypatch):
 
 
 def test_main_with_template_file(monkeypatch, tmp_path):
-    template_file = tmp_path / "template.j2"
+    template_file = tmp_path / "template.jinja"
     template_file.write_text("{{ greeting }}")
 
     command = f"jiren {template_file} -- --greeting=hello"

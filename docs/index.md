@@ -26,14 +26,14 @@ hello, world
 An example of reading a template from a file:
 
 ```console
-$ echo "hello, {{ name }}" >template.j2
-$ jiren template.j2 -- --name=world
+$ echo "hello, {{ name }}" >template.jinja
+$ jiren template.jinja -- --name=world
 hello, world
 ```
 
 In this example, the template contains a variable called `name`. You can set values for variables in a template using program arguments passed to the `jiren` command. Note that the arguments for the variables must be located after `--`.
 
-If you want to know more about template format, please refer to jinja2 document ( http://jinja.pocoo.org/ ).
+If you want to know more about template format, please refer to Jinja document ( https://jinja.palletsprojects.com/ ).
 
 ### Variables in a template
 
@@ -54,7 +54,7 @@ variables from a template provided through stdin.
 
 ### Default values
 
-You can set default values for variables for which no values was specified. This is based on the jinja2 specification.
+You can set default values for variables for which no values was specified. This is based on the Jinja specification.
 
 Command:
 

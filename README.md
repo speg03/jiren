@@ -1,6 +1,6 @@
 # jiren
 
-_jiren_ is an application that generates text from a template. The format of the template is based on jinja2.
+_jiren_ is an application that generates text from a template. The format of the template is based on Jinja.
 
 [![PyPI](https://img.shields.io/pypi/v/jiren)](https://pypi.org/project/jiren/)
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/jiren)](https://pypi.org/project/jiren/)
