@@ -26,7 +26,7 @@ classifiers = [
 dependencies = ["jinja2>=2.11", "pyyaml>=5.3"]
 
 [project.urls]
-Homepage = "https://github.com/speg03/jiren"
+Homepage = "https://speg03.github.io/jiren/"
 Repository = "https://github.com/speg03/jiren"
 
 [project.scripts]
