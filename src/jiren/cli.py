@@ -27,10 +27,15 @@ def main():
         action="store_true",
         help="All variables contained in the data file must be used in the template.",
     )
-    parser.add_argument(
+    data_group = parser.add_mutually_exclusive_group()
+    data_group.add_argument(
         "-d",
         "--data",
         help="A structured data file path. Accepts JSON or YAML files.",
+    )
+    data_group.add_argument(
+        "--data-string",
+        help="Structured JSON or YAML data supplied directly on the command line.",
     )
     parser.add_argument(
         "template",
@@ -75,6 +80,8 @@ def main():
                 data_source = f.read()
         except OSError:
             parser.error(f"cannot read data file: {args.data}")
+    elif args.data_string:
+        data_source = args.data_string
 
     variable_parser = argparse.ArgumentParser(add_help=False, usage=argparse.SUPPRESS)
     variable_group = variable_parser.add_argument_group("variables")
@@ -106,7 +113,8 @@ def main():
             required=args.required,
         )
     except InvalidDataError as error:
-        parser.error(f"{error}: {args.data}")
+        data_label = args.data if args.data else "--data-string"
+        parser.error(f"{error}: {data_label}")
     except RenderError as error:
         parser.error(str(error))
 
