@@ -52,11 +52,7 @@ def test_main_reads_structured_data_from_command_line(monkeypatch):
 
     monkeypatch.setattr(
         "sys.argv",
-        [
-            "jiren",
-            '--data-string={"count": 42, "enabled": true}',
-            "-",
-        ],
+        ["jiren", '--data-string={"count": 42, "enabled": true}'],
     )
     monkeypatch.setattr(
         "sys.stdin",
@@ -75,7 +71,7 @@ def test_main_rejects_data_and_data_string_together(monkeypatch, tmp_path):
 
     monkeypatch.setattr(
         "sys.argv",
-        ["jiren", f"--data={data_file}", "--data-string=greeting: hello", "-"],
+        ["jiren", f"--data={data_file}", "--data-string=greeting: hello"],
     )
     monkeypatch.setattr("sys.stderr", stderr)
 
@@ -104,7 +100,7 @@ def test_main_reports_unreadable_data_file(monkeypatch, tmp_path):
     data_file = tmp_path / "missing.yaml"
     stderr = io.StringIO()
 
-    monkeypatch.setattr("sys.argv", ["jiren", f"--data={data_file}", "-"])
+    monkeypatch.setattr("sys.argv", ["jiren", f"--data={data_file}"])
     monkeypatch.setattr("sys.stdin", io.StringIO("{{ greeting }}"))
     monkeypatch.setattr("sys.stderr", stderr)
 
@@ -164,7 +160,7 @@ def test_main_converts_core_errors_to_argument_errors(monkeypatch, tmp_path):
     data_file.write_text("unused: value")
     stderr = io.StringIO()
 
-    monkeypatch.setattr("sys.argv", ["jiren", f"--data={data_file}", "--strict", "-"])
+    monkeypatch.setattr("sys.argv", ["jiren", f"--data={data_file}", "--strict"])
     monkeypatch.setattr("sys.stdin", io.StringIO("{{ greeting }}"))
     monkeypatch.setattr("sys.stderr", stderr)
 
@@ -180,7 +176,7 @@ def test_main_includes_data_path_for_invalid_data(monkeypatch, tmp_path):
     data_file.write_text("not a mapping")
     stderr = io.StringIO()
 
-    monkeypatch.setattr("sys.argv", ["jiren", f"--data={data_file}", "-"])
+    monkeypatch.setattr("sys.argv", ["jiren", f"--data={data_file}"])
     monkeypatch.setattr("sys.stdin", io.StringIO("{{ greeting }}"))
     monkeypatch.setattr("sys.stderr", stderr)
 
@@ -194,7 +190,7 @@ def test_main_includes_data_path_for_invalid_data(monkeypatch, tmp_path):
 def test_main_labels_data_string_for_invalid_data(monkeypatch):
     stderr = io.StringIO()
 
-    monkeypatch.setattr("sys.argv", ["jiren", "--data-string=not a mapping", "-"])
+    monkeypatch.setattr("sys.argv", ["jiren", "--data-string=not a mapping"])
     monkeypatch.setattr("sys.stdin", io.StringIO("{{ greeting }}"))
     monkeypatch.setattr("sys.stderr", stderr)
 

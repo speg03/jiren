@@ -53,7 +53,7 @@ Use `jiren --help` without a template argument to show general usage without rea
 Jinja default filters can provide values when a variable is not supplied:
 
 ```console
-$ echo "{{ message }}, {{ name | default('world') }}" | jiren - -- --message=hello
+$ echo "{{ message }}, {{ name | default('world') }}" | jiren -- --message=hello
 hello, world
 ```
 
@@ -70,7 +70,7 @@ greeting:
   name: world
 EOF
 
-$ echo "{{ greeting.message }}, {{ greeting.name }}" | jiren --data=data.yaml -
+$ echo "{{ greeting.message }}, {{ greeting.name }}" | jiren --data=data.yaml
 hello, world
 ```
 
@@ -81,7 +81,7 @@ Values passed after `--` override values with the same top-level name from the d
 Load template variables from JSON or YAML supplied directly on the command line. This is useful for values that must retain their types without creating a data file.
 
 ```console
-$ echo "{{ count + 1 }}, {{ enabled | lower }}" | jiren --data-string='{"count": 42, "enabled": true}' -
+$ echo "{{ count + 1 }}, {{ enabled | lower }}" | jiren --data-string='{"count": 42, "enabled": true}'
 43, true
 ```
 
@@ -97,7 +97,7 @@ message: hello
 invalid_key: invalid
 EOF
 
-$ echo "{{ message }}" | jiren --data=data.yaml --strict -
+$ echo "{{ message }}" | jiren --data=data.yaml --strict
 jiren: error: the data file contains unknown variables: invalid_key
 ```
 
@@ -106,7 +106,7 @@ jiren: error: the data file contains unknown variables: invalid_key
 Require a value for every variable used by the template.
 
 ```console
-$ echo "{{ message }}, {{ name }}" | jiren --required - -- --message=hello
+$ echo "{{ message }}, {{ name }}" | jiren --required -- --message=hello
 jiren: error: the following variables are required: name
 ```
 
