@@ -4,7 +4,7 @@ icon: lucide/rocket
 
 # jiren
 
-`jiren` renders [Jinja templates](https://jinja.palletsprojects.com/) from files or standard input, using variables supplied on the command line or in structured data files.
+_jiren_ renders [Jinja templates](https://jinja.palletsprojects.com/) from files or standard input, using variables supplied on the command line or in structured data files.
 
 ## Installation
 

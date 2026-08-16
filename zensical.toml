@@ -1,5 +1,5 @@
 [project]
-site_url = "https://speg03.github.io/jiren"
+site_url = "https://speg03.github.io/jiren/"
 site_name = "jiren"
 site_description = "Jinja template renderer"
 site_author = "Takahiro Yano"
