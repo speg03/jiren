@@ -26,9 +26,10 @@ jobs:
       - name: Test with python ${{ matrix.python-version }}
         run: make test
       - name: Upload coverage reports
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+        if: env.CODECOV_TOKEN != ''
         uses: codecov/codecov-action@v7
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
 
   release:
     needs: test
