@@ -113,7 +113,8 @@ def main():
             required=args.required,
         )
     except InvalidDataError as error:
-        parser.error(f"{error}: {args.data}")
+        data_label = args.data if args.data else "--data-string"
+        parser.error(f"{error}: {data_label}")
     except RenderError as error:
         parser.error(str(error))
 

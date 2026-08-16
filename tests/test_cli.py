@@ -172,3 +172,19 @@ def test_main_includes_data_path_for_invalid_data(monkeypatch, tmp_path):
 
     assert error.value.code == 2
     assert f"the data file must have at least one key: {data_file}" in stderr.getvalue()
+
+
+def test_main_labels_data_string_for_invalid_data(monkeypatch):
+    stderr = io.StringIO()
+
+    monkeypatch.setattr("sys.argv", ["jiren", "--data-string=not a mapping", "-"])
+    monkeypatch.setattr("sys.stdin", io.StringIO("{{ greeting }}"))
+    monkeypatch.setattr("sys.stderr", stderr)
+
+    with pytest.raises(SystemExit) as error:
+        main()
+
+    assert error.value.code == 2
+    assert (
+        "the data file must have at least one key: --data-string" in stderr.getvalue()
+    )
