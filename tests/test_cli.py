@@ -47,6 +47,28 @@ def test_main_reads_template_and_data_files(monkeypatch, tmp_path):
     assert stdout.getvalue() == "hello, world\n"
 
 
+def test_main_reads_structured_data_from_command_line(monkeypatch):
+    stdout = io.StringIO()
+
+    monkeypatch.setattr(
+        "sys.argv",
+        [
+            "jiren",
+            '--data-string={"count": 42, "enabled": true}',
+            "-",
+        ],
+    )
+    monkeypatch.setattr(
+        "sys.stdin",
+        io.StringIO("{{ count + 1 }}, {{ enabled | lower }}"),
+    )
+    monkeypatch.setattr("sys.stdout", stdout)
+
+    main()
+
+    assert stdout.getvalue() == "43, true\n"
+
+
 def test_main_reports_unreadable_template_file(monkeypatch, tmp_path):
     template_file = tmp_path / "missing.jinja"
     stderr = io.StringIO()
