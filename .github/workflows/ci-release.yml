@@ -6,8 +6,8 @@ on:
     branches: [main]
 
 concurrency:
-  group: release-${{ github.ref }}
-  cancel-in-progress: true
+  group: ci-release-${{ github.event_name }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   test:
