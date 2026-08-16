@@ -2,127 +2,33 @@
 icon: lucide/rocket
 ---
 
-# Get started
+# jiren
+
+`jiren` renders [Jinja templates](https://jinja.palletsprojects.com/) from files or standard input, using variables supplied on the command line or in structured data files.
 
 ## Installation
+
+jiren requires Python 3.10 or later.
+
+Install jiren with pip:
 
 ```console
 $ pip install jiren
 ```
 
-## Usage
-
-### Generate text
-
-Generate text from a template using the `jiren` command. This command can read a template from stdin or files.
-
-An example of reading a template from stdin:
+Or install it as an isolated tool with [uv](https://docs.astral.sh/uv/):
 
 ```console
-$ echo "hello, {{ name }}" | jiren -- --name=world
-hello, world
+$ uv tool install jiren
 ```
 
-An example of reading a template from a file:
+To run jiren without installing it, use `uvx`:
 
 ```console
-$ echo "hello, {{ name }}" >template.jinja
-$ jiren template.jinja -- --name=world
-hello, world
+$ uvx jiren --help
 ```
 
-In this example, the template contains a variable called `name`. You can set values for variables in a template using program arguments passed to the `jiren` command. Note that the arguments for the variables must be located after `--`.
+## Documentation
 
-If you want to know more about template format, please refer to Jinja document ( https://jinja.palletsprojects.com/ ).
-
-### Variables in a template
-
-You can use the help to check the variables defined in a template.
-
-```console
-$ echo "{{ message }}, {{ name }}" | jiren --help -
-... (omitted)
-
-variables:
-  --name NAME
-  --message MESSAGE
-```
-
-Use `jiren --help` without a template argument to display the general usage
-without reading stdin. Use `-` explicitly when the help should include
-variables from a template provided through stdin.
-
-### Default values
-
-You can set default values for variables for which no values were specified. This is based on the Jinja specification.
-
-Command:
-
-```sh
-echo "{{ message }}, {{ name | default('world') }}" | jiren - -- --message=hello
-```
-
-Outputs:
-
-```
-hello, world
-```
-
-### Option: data
-
-You can pass a file with variables defined structurally using the `--data` option.
-
-Command:
-
-```sh
-cat <<EOF >data.yaml
-greeting:
-  message: hello
-  name: world
-EOF
-
-echo "{{ greeting.message }}, {{ greeting.name }}" | jiren --data=data.yaml -
-```
-
-Outputs:
-
-```
-hello, world
-```
-
-### Option: strict
-
-If the `--strict` option is used with the `--data` option, all variables in the data file must be used in the template.
-
-Command:
-
-```sh
-cat <<EOF >data.yaml
-message: hello
-invalid_key: invalid
-EOF
-
-echo "{{ message }}" | jiren --data=data.yaml --strict -
-```
-
-Outputs:
-
-```
-jiren: error: the data file contains unknown variables: invalid_key
-```
-
-### Option: required
-
-When using the `--required` option, you must specify values for all variables.
-
-Command:
-
-```sh
-echo "{{ message }}, {{ name }}" | jiren --required - -- --message=hello
-```
-
-Outputs:
-
-```
-jiren: error: the following variables are required: name
-```
+- [Concept](concept.md): Why jiren exists and how it helps you work with template variables.
+- [Reference](reference.md): Usage, template input, variables, data files, and validation options.
