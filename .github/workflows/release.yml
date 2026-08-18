@@ -10,7 +10,7 @@ concurrency:
 
 jobs:
   test:
-    uses: ./.github/workflows/pyhon-tests.yml
+    uses: ./.github/workflows/python-tests.yml
 
   release:
     needs: test
