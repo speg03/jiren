@@ -6,11 +6,12 @@ on:
 
 concurrency:
   group: release-${{ github.event_name }}-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   test:
     uses: ./.github/workflows/python-tests.yml
+    secrets: inherit
 
   release:
     needs: test
