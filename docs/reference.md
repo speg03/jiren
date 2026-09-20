@@ -33,6 +33,29 @@ hello, world
 
 For the template language, see the [Jinja documentation](https://jinja.palletsprojects.com/).
 
+## Nested command-line variables
+
+Use dot-separated variable paths after `--` to provide nested values:
+
+```console
+$ echo "{{ greeting.message }}" | jiren -- --greeting.message=hello
+hello
+```
+
+The default `--max-depth=1` supports one nested level. For a deeper path, pass the remaining nested value as a JSON string to the deepest available option:
+
+```console
+$ echo "{{ user.profile.name }}" | jiren -- --user.profile='{"name":"you"}'
+you
+```
+
+Alternatively, set `--max-depth` to pass each level as a separate option:
+
+```console
+$ echo "{{ user.profile.name }}" | jiren --max-depth=2 -- --user.profile.name=you
+you
+```
+
 ## Inspect template variables
 
 Pass `--help` with a template to list the variables it uses:
@@ -86,6 +109,10 @@ $ echo "{{ count + 1 }}, {{ enabled | lower }}" | jiren --data-string='{"count":
 ```
 
 `--data-string` cannot be combined with `--data`.
+
+### `--max-depth DEPTH`
+
+Set the maximum nesting depth for command-line variable paths. The default is `1`; values beyond that depth are passed as JSON strings.
 
 ### `--strict`
 
