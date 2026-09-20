@@ -31,7 +31,7 @@ $ jiren template.jinja -- --name=world
 hello, world
 ```
 
-For the template language, see the [Jinja documentation](https://jinja.palletsprojects.com/).
+jiren uses MiniJinja instead of Jinja2, so some Jinja2 template syntax is not supported. See the [MiniJinja compatibility documentation](https://github.com/mitsuhiko/minijinja/blob/main/COMPATIBILITY.md) for supported syntax and differences.
 
 ## Nested command-line variables
 
