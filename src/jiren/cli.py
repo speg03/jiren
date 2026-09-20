@@ -2,6 +2,8 @@ import argparse
 import logging
 import sys
 
+import yaml
+
 from . import __version__
 from .renderer import InvalidDataError, RenderError, render_template, template_variables
 
@@ -105,10 +107,17 @@ def main():
     logger.debug("variables from command line: %s", variables)
 
     try:
+        data: dict[str, object] = {}
+        if data_source is not None:
+            loaded_data = yaml.safe_load(data_source)
+            if not isinstance(loaded_data, dict):
+                raise InvalidDataError("the data file must have at least one key")
+            data = loaded_data
+        data.update(variables)
+
         rendered_text = render_template(
             template_source,
-            data_source=data_source,
-            variables=variables,
+            data_source=data,
             strict=args.strict,
             required=args.required,
         )

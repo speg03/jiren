@@ -65,6 +65,38 @@ def test_main_reads_structured_data_from_command_line(monkeypatch):
     assert stdout.getvalue() == "43, true\n"
 
 
+def test_main_command_line_variables_override_data_file(monkeypatch, tmp_path):
+    data_file = tmp_path / "data.yaml"
+    data_file.write_text("message: hello")
+    stdout = io.StringIO()
+
+    monkeypatch.setattr(
+        "sys.argv",
+        ["jiren", f"--data={data_file}", "-", "--", "--message=hey"],
+    )
+    monkeypatch.setattr("sys.stdin", io.StringIO("{{ message }}"))
+    monkeypatch.setattr("sys.stdout", stdout)
+
+    main()
+
+    assert stdout.getvalue() == "hey\n"
+
+
+def test_main_command_line_variables_override_data_string(monkeypatch):
+    stdout = io.StringIO()
+
+    monkeypatch.setattr(
+        "sys.argv",
+        ["jiren", "--data-string=message: hello", "-", "--", "--message=hey"],
+    )
+    monkeypatch.setattr("sys.stdin", io.StringIO("{{ message }}"))
+    monkeypatch.setattr("sys.stdout", stdout)
+
+    main()
+
+    assert stdout.getvalue() == "hey\n"
+
+
 def test_main_rejects_data_and_data_string_together(monkeypatch, tmp_path):
     data_file = tmp_path / "data.yaml"
     stderr = io.StringIO()

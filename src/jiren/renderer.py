@@ -1,8 +1,6 @@
 from collections.abc import Mapping
 from typing import Any
 
-import yaml
-
 from .template import Template
 
 
@@ -29,19 +27,12 @@ def template_variables(template_source: str) -> set[str]:
 def render_template(
     template_source: str,
     *,
-    data_source: str | None = None,
-    variables: Mapping[str, Any] | None = None,
+    data_source: Mapping[str, Any] | None = None,
     strict: bool = False,
     required: bool = False,
 ) -> str:
     template = Template(template_source)
-    provided_data: dict[str, Any] = {}
-
-    if data_source is not None:
-        loaded_data = yaml.safe_load(data_source)
-        if not isinstance(loaded_data, dict):
-            raise InvalidDataError("the data file must have at least one key")
-        provided_data = loaded_data
+    provided_data = dict(data_source or {})
 
     unknown_variables = set(provided_data) - template.variables
     if strict and unknown_variables:
@@ -49,8 +40,6 @@ def render_template(
             "the data file contains unknown variables: "
             f"{', '.join(sorted(unknown_variables))}"
         )
-
-    provided_data.update(variables or {})
 
     missing_variables = template.variables - set(provided_data)
     if required and missing_variables:

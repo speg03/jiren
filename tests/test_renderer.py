@@ -1,7 +1,6 @@
 import pytest
 
 from jiren.renderer import (
-    InvalidDataError,
     MissingVariablesError,
     UnknownDataVariablesError,
     render_template,
@@ -10,7 +9,7 @@ from jiren.renderer import (
 
 
 @pytest.mark.parametrize(
-    "template_source,variables,expected",
+    "template_source,data_source,expected",
     [
         ("{{ greeting }}", {"greeting": "hello"}, "hello"),
         ("{{ greeting }}", {}, ""),
@@ -19,8 +18,8 @@ from jiren.renderer import (
         ("", {}, ""),
     ],
 )
-def test_render_template(template_source, variables, expected):
-    assert render_template(template_source, variables=variables) == expected
+def test_render_template(template_source, data_source, expected):
+    assert render_template(template_source, data_source=data_source) == expected
 
 
 def test_template_variables():
@@ -28,7 +27,7 @@ def test_template_variables():
 
 
 def test_render_template_with_data_source():
-    data_source = "greeting:\n  message: hello\n  target: world"
+    data_source = {"greeting": {"message": "hello", "target": "world"}}
 
     rendered = render_template(
         "{{ greeting.message }}, {{ greeting.target }}", data_source=data_source
@@ -37,21 +36,13 @@ def test_render_template_with_data_source():
     assert rendered == "hello, world"
 
 
-def test_render_template_command_line_variables_override_data_source():
+def test_render_template_uses_combined_data_source():
     rendered = render_template(
         "{{ message }}, {{ name }}",
-        data_source="message: hello",
-        variables={"message": "hey", "name": "you"},
+        data_source={"message": "hey", "name": "you"},
     )
 
     assert rendered == "hey, you"
-
-
-def test_render_template_rejects_non_mapping_data_source():
-    with pytest.raises(
-        InvalidDataError, match="the data file must have at least one key"
-    ):
-        render_template("{{ greeting }}", data_source="hello")
 
 
 def test_render_template_rejects_unknown_data_variables_in_strict_mode():
@@ -59,7 +50,9 @@ def test_render_template_rejects_unknown_data_variables_in_strict_mode():
         UnknownDataVariablesError,
         match="the data file contains unknown variables: a, b, c",
     ):
-        render_template("{{ greeting }}", data_source="a: 1\nb: 2\nc: 3", strict=True)
+        render_template(
+            "{{ greeting }}", data_source={"a": 1, "b": 2, "c": 3}, strict=True
+        )
 
 
 def test_render_template_rejects_missing_variables_in_required_mode():
