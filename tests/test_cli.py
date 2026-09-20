@@ -264,7 +264,7 @@ def test_main_converts_core_errors_to_argument_errors(monkeypatch, tmp_path):
         main()
 
     assert error.value.code == 2
-    assert "the data file contains unknown variables: unused" in stderr.getvalue()
+    assert "the data source contains unknown variables: unused" in stderr.getvalue()
 
 
 def test_main_includes_data_path_for_invalid_data(monkeypatch, tmp_path):
@@ -280,7 +280,9 @@ def test_main_includes_data_path_for_invalid_data(monkeypatch, tmp_path):
         main()
 
     assert error.value.code == 2
-    assert f"the data file must have at least one key: {data_file}" in stderr.getvalue()
+    assert (
+        f"the data source must have at least one key: {data_file}" in stderr.getvalue()
+    )
 
 
 def test_main_labels_data_string_for_invalid_data(monkeypatch):
@@ -295,5 +297,5 @@ def test_main_labels_data_string_for_invalid_data(monkeypatch):
 
     assert error.value.code == 2
     assert (
-        "the data file must have at least one key: --data-string" in stderr.getvalue()
+        "the data source must have at least one key: --data-string" in stderr.getvalue()
     )

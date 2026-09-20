@@ -34,7 +34,7 @@ def parse_data_source(source: str | None) -> dict[str, Any]:
 
     data = yaml.safe_load(source)
     if not isinstance(data, dict):
-        raise InvalidDataError("the data file must have at least one key")
+        raise InvalidDataError("the data source must have at least one key")
     return data
 
 
@@ -97,28 +97,30 @@ def render_template(
     template = Template(template_source)
     provided_data = dict(data_source or {})
 
-    unknown_variables = {
-        path
-        for path in _data_variable_paths(provided_data)
-        if not any(
-            _paths_are_related(path, variable) for variable in template.variables
-        )
-    }
-    if strict and unknown_variables:
-        raise UnknownDataVariablesError(
-            "the data file contains unknown variables: "
-            f"{', '.join(sorted(unknown_variables))}"
-        )
+    if strict:
+        unknown_variables = {
+            path
+            for path in _data_variable_paths(provided_data)
+            if not any(
+                _paths_are_related(path, variable) for variable in template.variables
+            )
+        }
+        if unknown_variables:
+            raise UnknownDataVariablesError(
+                "the data source contains unknown variables: "
+                f"{', '.join(sorted(unknown_variables))}"
+            )
 
-    missing_variables = {
-        variable
-        for variable in template.variables
-        if not _has_variable(provided_data, variable)
-    }
-    if required and missing_variables:
-        raise MissingVariablesError(
-            "the following variables are required: "
-            f"{', '.join(sorted(missing_variables))}"
-        )
+    if required:
+        missing_variables = {
+            variable
+            for variable in template.variables
+            if not _has_variable(provided_data, variable)
+        }
+        if missing_variables:
+            raise MissingVariablesError(
+                "the following variables are required: "
+                f"{', '.join(sorted(missing_variables))}"
+            )
 
     return template.render(provided_data)

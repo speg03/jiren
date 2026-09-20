@@ -47,7 +47,7 @@ def test_parse_data_source(source, expected):
 @pytest.mark.parametrize("source", ["not a mapping", "- item", "null"])
 def test_parse_data_source_rejects_non_mapping(source):
     with pytest.raises(
-        InvalidDataError, match="the data file must have at least one key"
+        InvalidDataError, match="the data source must have at least one key"
     ):
         parse_data_source(source)
 
@@ -93,7 +93,7 @@ def test_render_template_uses_combined_data_source():
 def test_render_template_rejects_unknown_data_variables_in_strict_mode():
     with pytest.raises(
         UnknownDataVariablesError,
-        match="the data file contains unknown variables: a, b, c",
+        match="the data source contains unknown variables: a, b, c",
     ):
         render_template(
             "{{ greeting }}", data_source={"a": 1, "b": 2, "c": 3}, strict=True
@@ -114,7 +114,7 @@ def test_render_template_accepts_nested_data_variables_in_strict_mode():
 def test_render_template_rejects_unknown_nested_data_variables_in_strict_mode():
     with pytest.raises(
         UnknownDataVariablesError,
-        match="the data file contains unknown variables: greeting.target",
+        match="the data source contains unknown variables: greeting.target",
     ):
         render_template(
             "{{ greeting.message }}",
@@ -139,3 +139,14 @@ def test_render_template_rejects_missing_nested_variables_in_required_mode():
         render_template(
             "{{ greeting.message }}", data_source={"greeting": {}}, required=True
         )
+
+
+def test_render_template_accepts_nested_variables_in_required_mode():
+    assert (
+        render_template(
+            "{{ greeting.message }}",
+            data_source={"greeting": {"message": "hello", "target": "world"}},
+            required=True,
+        )
+        == "hello"
+    )
