@@ -14,6 +14,7 @@ class Template:
     def render(
         self, context: Mapping[str, Any] | None = None, /, **override_context: Any
     ) -> str:
+        """Render the template with context values and keyword overrides."""
         if context is not None:
             context = {**context, **override_context}
         else:

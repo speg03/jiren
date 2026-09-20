@@ -1,6 +1,8 @@
 from collections.abc import Mapping
 from typing import Any
 
+import yaml
+
 from .template import Template
 
 
@@ -20,7 +22,38 @@ class MissingVariablesError(RenderError):
     pass
 
 
+def parse_data_source(source: str | None) -> dict[str, Any]:
+    """Parse a YAML or JSON source into a mapping.
+
+    Return an empty mapping when no source is supplied and raise
+    InvalidDataError when the parsed value is not a mapping.
+    """
+    if source is None:
+        return {}
+
+    data = yaml.safe_load(source)
+    if not isinstance(data, dict):
+        raise InvalidDataError("the data file must have at least one key")
+    return data
+
+
+def merge_template_data(
+    data_source: Mapping[str, Any], variable_values: Mapping[str, Any]
+) -> dict[str, Any]:
+    """Merge parsed CLI values into source data, retaining omitted values."""
+    result = {}
+    for key, value in variable_values.items():
+        source_value = data_source.get(key)
+        if isinstance(value, Mapping):
+            source_mapping = source_value if isinstance(source_value, Mapping) else {}
+            result[key] = merge_template_data(source_mapping, value)
+        elif value is not None or key in data_source:
+            result[key] = value
+    return result
+
+
 def template_variables(template_source: str) -> set[str]:
+    """Return the undeclared variable paths referenced by a template."""
     return Template(template_source).variables
 
 
@@ -59,6 +92,7 @@ def render_template(
     strict: bool = False,
     required: bool = False,
 ) -> str:
+    """Render a template, optionally validating supplied data."""
     template = Template(template_source)
     provided_data = dict(data_source or {})
 

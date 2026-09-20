@@ -127,6 +127,21 @@ def test_main_renders_deeply_nested_variable_from_command_line(monkeypatch):
     assert stdout.getvalue() == "you\n"
 
 
+def test_main_renders_deeply_nested_variable_from_json_command_line(monkeypatch):
+    stdout = io.StringIO()
+
+    monkeypatch.setattr(
+        "sys.argv",
+        ["jiren", "-", "--", '--user.profile={"name":"you"}'],
+    )
+    monkeypatch.setattr("sys.stdin", io.StringIO("{{ user.profile.name }}"))
+    monkeypatch.setattr("sys.stdout", stdout)
+
+    main()
+
+    assert stdout.getvalue() == "you\n"
+
+
 def test_main_rejects_data_and_data_string_together(monkeypatch, tmp_path):
     data_file = tmp_path / "data.yaml"
     stderr = io.StringIO()

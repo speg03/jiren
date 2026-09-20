@@ -1,8 +1,11 @@
 import pytest
 
 from jiren.renderer import (
+    InvalidDataError,
     MissingVariablesError,
     UnknownDataVariablesError,
+    merge_template_data,
+    parse_data_source,
     render_template,
     template_variables,
 )
@@ -26,6 +29,43 @@ def test_template_variables():
     assert template_variables("{{ greeting.message }}, {{ name }}") == {
         "greeting.message",
         "name",
+    }
+
+
+@pytest.mark.parametrize(
+    "source,expected",
+    [
+        ("greeting: hello", {"greeting": "hello"}),
+        ('{"count": 42, "enabled": true}', {"count": 42, "enabled": True}),
+        (None, {}),
+    ],
+)
+def test_parse_data_source(source, expected):
+    assert parse_data_source(source) == expected
+
+
+@pytest.mark.parametrize("source", ["not a mapping", "- item", "null"])
+def test_parse_data_source_rejects_non_mapping(source):
+    with pytest.raises(
+        InvalidDataError, match="the data file must have at least one key"
+    ):
+        parse_data_source(source)
+
+
+def test_merge_template_data_preserves_source_values_and_prunes_added_none_values():
+    data_source = {
+        "message": None,
+        "greeting": {"message": "hello", "target": "world"},
+    }
+    variable_values = {
+        "message": None,
+        "name": None,
+        "greeting": {"message": "hey", "target": "world", "extra": None},
+    }
+
+    assert merge_template_data(data_source, variable_values) == {
+        "message": None,
+        "greeting": {"message": "hey", "target": "world"},
     }
 
 
