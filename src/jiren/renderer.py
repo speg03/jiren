@@ -1,4 +1,5 @@
 from collections.abc import Mapping
+from copy import deepcopy
 from typing import Any
 
 import yaml
@@ -41,13 +42,13 @@ def merge_template_data(
     data_source: Mapping[str, Any], variable_values: Mapping[str, Any]
 ) -> dict[str, Any]:
     """Merge parsed CLI values into source data, retaining omitted values."""
-    result = {}
+    result = deepcopy(dict(data_source))
     for key, value in variable_values.items():
         source_value = data_source.get(key)
         if isinstance(value, Mapping):
             source_mapping = source_value if isinstance(source_value, Mapping) else {}
             result[key] = merge_template_data(source_mapping, value)
-        elif value is not None or key in data_source:
+        elif value is not None:
             result[key] = value
     return result
 

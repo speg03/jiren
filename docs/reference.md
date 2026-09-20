@@ -12,7 +12,7 @@ $ jiren [OPTIONS] [TEMPLATE] [-- VARIABLE_OPTIONS]
 
 `TEMPLATE` is a template file path. Omit it, or pass `-`, to read the template from standard input. Pass values for template variables after `--`.
 
-Values passed after `--` are strings. Use `--data` or `--data-string` when values need JSON or YAML types, such as numbers, booleans, lists, or nested objects.
+Scalar values passed after `--` are always strings. They do not inherit the type of a corresponding value loaded with `--data`: for example, `--count=5` produces `"5"`, and `--enabled=false` produces the truthy string `"false"`. Use `--data` or `--data-string` when a variable needs a JSON or YAML type, such as a number, boolean, list, or object.
 
 ## Render a template
 
@@ -97,7 +97,7 @@ $ echo "{{ greeting.message }}, {{ greeting.name }}" | jiren --data=data.yaml
 hello, world
 ```
 
-Values passed after `--` override values with the same top-level name from the data file.
+Values passed after `--` override values with the same top-level name from the data file. Each scalar override is a string, even when the original data value has another type.
 
 ### `--data-string DATA`
 

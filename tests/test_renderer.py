@@ -56,16 +56,18 @@ def test_merge_template_data_preserves_source_values_and_prunes_added_none_value
     data_source = {
         "message": None,
         "greeting": {"message": "hello", "target": "world"},
+        "unused": "value",
     }
     variable_values = {
         "message": None,
         "name": None,
-        "greeting": {"message": "hey", "target": "world", "extra": None},
+        "greeting": {"message": "hey", "extra": None},
     }
 
     assert merge_template_data(data_source, variable_values) == {
         "message": None,
         "greeting": {"message": "hey", "target": "world"},
+        "unused": "value",
     }
 
 

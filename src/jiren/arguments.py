@@ -1,6 +1,5 @@
 import argparse
 from collections.abc import Sequence
-from copy import deepcopy
 from typing import Any
 
 from nestargs import NestedArgumentParser
@@ -70,12 +69,12 @@ def parse_cli_arguments(
 
 
 def create_variable_parser(
-    data_source: dict[str, Any], variables: set[str], *, max_depth: int
+    variables: set[str], *, max_depth: int
 ) -> NestedArgumentParser:
-    """Create a parser for template variables using data-source defaults."""
+    """Create a parser for template variables."""
     parser = NestedArgumentParser(add_help=False, usage=argparse.SUPPRESS)
     parser.add_arguments_from_dict(
-        _add_template_variables(data_source, variables), max_depth=max_depth
+        _template_variable_schema(variables), max_depth=max_depth
     )
     return parser
 
@@ -87,10 +86,8 @@ def parse_variable_options(
     return _namespace_to_dict(parser.parse_args(variable_options))
 
 
-def _add_template_variables(
-    data_source: dict[str, Any], variables: set[str]
-) -> dict[str, Any]:
-    argument_values = deepcopy(data_source)
+def _template_variable_schema(variables: set[str]) -> dict[str, Any]:
+    argument_values: dict[str, Any] = {}
     for variable in variables:
         current = argument_values
         *parents, key = variable.split(".")

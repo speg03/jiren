@@ -62,7 +62,7 @@ def main():
         parser.error(f"{error}: {data_label}")
 
     variable_parser = create_variable_parser(
-        data, variables_in_template, max_depth=args.max_depth
+        variables_in_template, max_depth=args.max_depth
     )
 
     if args.help:

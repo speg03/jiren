@@ -203,6 +203,25 @@ def test_main_help_with_stdin_template_includes_variable_options(monkeypatch):
     assert "--greeting GREETING" in stdout.getvalue()
 
 
+def test_main_help_with_data_lists_only_template_variable_options(
+    monkeypatch, tmp_path
+):
+    data_file = tmp_path / "data.yaml"
+    data_file.write_text("message: hello\nunused: value")
+    stdout = io.StringIO()
+
+    monkeypatch.setattr("sys.argv", ["jiren", f"--data={data_file}", "--help", "-"])
+    monkeypatch.setattr("sys.stdin", io.StringIO("{{ message }}"))
+    monkeypatch.setattr("sys.stdout", stdout)
+
+    with pytest.raises(SystemExit) as error:
+        main()
+
+    assert error.value.code == 0
+    assert "--message MESSAGE" in stdout.getvalue()
+    assert "--unused UNUSED" not in stdout.getvalue()
+
+
 def test_main_help_without_template_does_not_read_stdin(monkeypatch):
     stdin = io.StringIO("{{ greeting }}")
     stdout = io.StringIO()
