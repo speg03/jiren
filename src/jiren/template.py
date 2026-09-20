@@ -7,7 +7,9 @@ from minijinja import Environment
 class Template:
     def __init__(self, source: str):
         self.env = Environment(templates={"source": source})
-        self.variables = self.env.undeclared_variables_in_template("source")
+        self.variables = self.env.undeclared_variables_in_template(
+            "source", nested=True
+        )
 
     def render(
         self, context: Mapping[str, Any] | None = None, /, **override_context: Any

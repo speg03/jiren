@@ -23,7 +23,10 @@ def test_render_template(template_source, data_source, expected):
 
 
 def test_template_variables():
-    assert template_variables("{{ greeting }}, {{ name }}") == {"greeting", "name"}
+    assert template_variables("{{ greeting.message }}, {{ name }}") == {
+        "greeting.message",
+        "name",
+    }
 
 
 def test_render_template_with_data_source():
@@ -55,9 +58,42 @@ def test_render_template_rejects_unknown_data_variables_in_strict_mode():
         )
 
 
+def test_render_template_accepts_nested_data_variables_in_strict_mode():
+    assert (
+        render_template(
+            "{{ greeting.message }}",
+            data_source={"greeting": {"message": "hello"}},
+            strict=True,
+        )
+        == "hello"
+    )
+
+
+def test_render_template_rejects_unknown_nested_data_variables_in_strict_mode():
+    with pytest.raises(
+        UnknownDataVariablesError,
+        match="the data file contains unknown variables: greeting.target",
+    ):
+        render_template(
+            "{{ greeting.message }}",
+            data_source={"greeting": {"message": "hello", "target": "world"}},
+            strict=True,
+        )
+
+
 def test_render_template_rejects_missing_variables_in_required_mode():
     with pytest.raises(
         MissingVariablesError,
         match="the following variables are required: greeting",
     ):
         render_template("{{ greeting }}", required=True)
+
+
+def test_render_template_rejects_missing_nested_variables_in_required_mode():
+    with pytest.raises(
+        MissingVariablesError,
+        match="the following variables are required: greeting.message",
+    ):
+        render_template(
+            "{{ greeting.message }}", data_source={"greeting": {}}, required=True
+        )
