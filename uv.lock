@@ -237,6 +237,7 @@ version = "0.0.0.dev0"
 source = { editable = "." }
 dependencies = [
     { name = "minijinja" },
+    { name = "nestargs" },
     { name = "pyyaml" },
 ]
 
@@ -259,6 +260,7 @@ tests = [
 [package.metadata]
 requires-dist = [
     { name = "minijinja", specifier = ">=2.24" },
+    { name = "nestargs", specifier = ">=2.1.0" },
     { name = "pyyaml", specifier = ">=5.3" },
 ]
 
@@ -387,6 +389,15 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/92/98/75d6a76499fd40f839a0a1a8fc46aa43cf6c47ea9680d4174289fd6fec3a/minijinja-2.24.0-cp38-abi3-musllinux_1_2_x86_64.whl", hash = "sha256:5e0cdc27520d2163ec8a2078e4ff20c3afff4fb89eb05d21679c3facd30369ab", size = 1388664, upload-time = "2026-08-31T19:28:41.421Z" },
     { url = "https://files.pythonhosted.org/packages/7d/f1/e8d82609d7aad5791d52fdec4c642fab46974094cef9102110efa6fc2713/minijinja-2.24.0-cp38-abi3-win32.whl", hash = "sha256:b68aa1bd72da3a6175afa721090592f19e637b7a02408f796298d342b709d06b", size = 1058094, upload-time = "2026-08-31T19:28:43.157Z" },
     { url = "https://files.pythonhosted.org/packages/5b/e5/d86c8c706b3820fc6f58baa0f7d322e78885843ddba7e9cba77985a3fbc7/minijinja-2.24.0-cp38-abi3-win_amd64.whl", hash = "sha256:541959f4529017e437b8822cdaabaaab9d4090c140138dec40dbd739b3b0f778", size = 1118117, upload-time = "2026-08-31T19:28:44.843Z" },
+]
+
+[[package]]
+name = "nestargs"
+version = "2.1.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/d6/3f/5a4d6a42e2bc5be94af6b6cacc988c5966ce5169d7c906d135cdc6624f0f/nestargs-2.1.0.tar.gz", hash = "sha256:cbc89d0943ba84ce1d7d4c22461b4cd06c61427cfe9505f3e2fa346af7ede2f0", size = 3739, upload-time = "2026-08-23T08:45:27.07Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/cb/bf/8de59ccaa42dde6d9cb6e9698af2e4b63a94f5b8f0972de3fd50f41d0afc/nestargs-2.1.0-py3-none-any.whl", hash = "sha256:a41683bca10c2bdcc56da354d5b79b18b7128ed5ba86cd3fcb8ed8b15a993a4a", size = 4227, upload-time = "2026-08-23T08:45:26.271Z" },
 ]
 
 [[package]]
