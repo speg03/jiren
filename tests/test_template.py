@@ -3,9 +3,9 @@ from jiren.template import Template
 
 class TestTemplate:
     def test_init(self):
-        source = "hello, {{ name }}"
+        source = "hello, {{ user.name }}"
         template = Template(source)
-        assert template.variables == {"name"}
+        assert template.variables == {"user.name"}
 
     def test_render(self):
         source = "hello, {{ name }}"

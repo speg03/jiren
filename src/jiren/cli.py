@@ -1,57 +1,25 @@
-import argparse
 import logging
 import sys
 
 from . import __version__
-from .renderer import InvalidDataError, RenderError, render_template, template_variables
+from .arguments import (
+    create_variable_parser,
+    parse_cli_arguments,
+    parse_variable_options,
+)
+from .renderer import (
+    InvalidDataError,
+    RenderError,
+    merge_template_data,
+    parse_data_source,
+    render_template,
+    template_variables,
+)
 
 
 def main():
-    parser = argparse.ArgumentParser(add_help=False, description="Template renderer")
-    parser.add_argument(
-        "-h", "--help", action="store_true", help="Show this message and exit."
-    )
-    parser.add_argument(
-        "-V", "--version", action="store_true", help="Show the version and exit."
-    )
-    parser.add_argument(
-        "--debug", action="store_true", help="Enable log output for debugging."
-    )
-    parser.add_argument(
-        "--required",
-        action="store_true",
-        help="A specific value must be provided for each variable.",
-    )
-    parser.add_argument(
-        "--strict",
-        action="store_true",
-        help="All variables contained in the data file must be used in the template.",
-    )
-    data_group = parser.add_mutually_exclusive_group()
-    data_group.add_argument(
-        "-d",
-        "--data",
-        help="A structured data file path. Accepts JSON or YAML files.",
-    )
-    data_group.add_argument(
-        "--data-string",
-        help="Structured JSON or YAML data supplied directly on the command line.",
-    )
-    parser.add_argument(
-        "template",
-        nargs="?",
-        help='A template file path. Omit it or provide "-" to use stdin.',
-    )
-
-    command_line_args = sys.argv[1:]
-    if "--" in command_line_args:
-        separator_index = command_line_args.index("--")
-        parser_args = command_line_args[:separator_index]
-        variable_options = command_line_args[separator_index + 1 :]
-    else:
-        parser_args = command_line_args
-        variable_options = []
-    args = parser.parse_args(parser_args)
+    """Run the jiren command-line interface."""
+    parser, args, variable_options = parse_cli_arguments(sys.argv[1:])
 
     logging.basicConfig(level=logging.DEBUG if args.debug else logging.INFO)
     logger = logging.getLogger(__name__)
@@ -83,15 +51,19 @@ def main():
     elif args.data_string:
         data_source = args.data_string
 
-    variable_parser = argparse.ArgumentParser(add_help=False, usage=argparse.SUPPRESS)
-    variable_group = variable_parser.add_argument_group("variables")
-
     logger.debug("template: %s", template_source)
     variables_in_template = template_variables(template_source)
-    for v in variables_in_template:
-        sanitized_name = v.replace("_", "-").strip("-")
-        variable_group.add_argument(f"--{sanitized_name}", dest=v)
     logger.debug("variables in the template: %s", sorted(variables_in_template))
+
+    try:
+        data = parse_data_source(data_source)
+    except InvalidDataError as error:
+        data_label = args.data if args.data else "--data-string"
+        parser.error(f"{error}: {data_label}")
+
+    variable_parser = create_variable_parser(
+        variables_in_template, max_depth=args.max_depth
+    )
 
     if args.help:
         parser.print_help()
@@ -100,21 +72,17 @@ def main():
         parser.exit(0)
 
     # Load variables from command line arguments.
-    variable_args = variable_parser.parse_args(variable_options)
-    variables = {k: v for k, v in vars(variable_args).items() if v is not None}
-    logger.debug("variables from command line: %s", variables)
+    variable_values = parse_variable_options(variable_parser, variable_options)
+    data = merge_template_data(data, variable_values)
+    logger.debug("variables from command line: %s", data)
 
     try:
         rendered_text = render_template(
             template_source,
-            data_source=data_source,
-            variables=variables,
+            data_source=data,
             strict=args.strict,
             required=args.required,
         )
-    except InvalidDataError as error:
-        data_label = args.data if args.data else "--data-string"
-        parser.error(f"{error}: {data_label}")
     except RenderError as error:
         parser.error(str(error))
 

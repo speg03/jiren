@@ -12,7 +12,7 @@ $ jiren [OPTIONS] [TEMPLATE] [-- VARIABLE_OPTIONS]
 
 `TEMPLATE` is a template file path. Omit it, or pass `-`, to read the template from standard input. Pass values for template variables after `--`.
 
-Values passed after `--` are strings. Use `--data` or `--data-string` when values need JSON or YAML types, such as numbers, booleans, lists, or nested objects.
+Scalar values passed after `--` are always strings. They do not inherit the type of a corresponding value loaded with `--data`: for example, `--count=5` produces `"5"`, and `--enabled=false` produces the truthy string `"false"`. Use `--data` or `--data-string` when a variable needs a JSON or YAML type, such as a number, boolean, list, or object.
 
 ## Render a template
 
@@ -31,7 +31,30 @@ $ jiren template.jinja -- --name=world
 hello, world
 ```
 
-For the template language, see the [Jinja documentation](https://jinja.palletsprojects.com/).
+jiren uses MiniJinja instead of Jinja2, so some Jinja2 template syntax is not supported. See the [MiniJinja compatibility documentation](https://github.com/mitsuhiko/minijinja/blob/main/COMPATIBILITY.md) for supported syntax and differences.
+
+## Nested command-line variables
+
+Use dot-separated variable paths after `--` to provide nested values:
+
+```console
+$ echo "{{ greeting.message }}" | jiren -- --greeting.message=hello
+hello
+```
+
+The default `--max-depth=1` supports one nested level. For a deeper path, pass the remaining nested value as a JSON string to the deepest available option:
+
+```console
+$ echo "{{ user.profile.name }}" | jiren -- --user.profile='{"name":"you"}'
+you
+```
+
+Alternatively, set `--max-depth` to pass each level as a separate option:
+
+```console
+$ echo "{{ user.profile.name }}" | jiren --max-depth=2 -- --user.profile.name=you
+you
+```
 
 ## Inspect template variables
 
@@ -74,7 +97,7 @@ $ echo "{{ greeting.message }}, {{ greeting.name }}" | jiren --data=data.yaml
 hello, world
 ```
 
-Values passed after `--` override values with the same top-level name from the data file.
+Values passed after `--` override values with the same top-level name from the data file. Each scalar override is a string, even when the original data value has another type.
 
 ### `--data-string DATA`
 
@@ -86,6 +109,10 @@ $ echo "{{ count + 1 }}, {{ enabled | lower }}" | jiren --data-string='{"count":
 ```
 
 `--data-string` cannot be combined with `--data`.
+
+### `--max-depth DEPTH`
+
+Set the maximum nesting depth for command-line variable paths. The default is `1`; values beyond that depth are passed as JSON strings.
 
 ### `--strict`
 

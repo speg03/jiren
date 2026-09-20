@@ -65,6 +65,83 @@ def test_main_reads_structured_data_from_command_line(monkeypatch):
     assert stdout.getvalue() == "43, true\n"
 
 
+def test_main_command_line_variables_override_data_file(monkeypatch, tmp_path):
+    data_file = tmp_path / "data.yaml"
+    data_file.write_text("message: hello")
+    stdout = io.StringIO()
+
+    monkeypatch.setattr(
+        "sys.argv",
+        ["jiren", f"--data={data_file}", "-", "--", "--message=hey"],
+    )
+    monkeypatch.setattr("sys.stdin", io.StringIO("{{ message }}"))
+    monkeypatch.setattr("sys.stdout", stdout)
+
+    main()
+
+    assert stdout.getvalue() == "hey\n"
+
+
+def test_main_command_line_variables_override_data_string(monkeypatch):
+    stdout = io.StringIO()
+
+    monkeypatch.setattr(
+        "sys.argv",
+        ["jiren", "--data-string=message: hello", "-", "--", "--message=hey"],
+    )
+    monkeypatch.setattr("sys.stdin", io.StringIO("{{ message }}"))
+    monkeypatch.setattr("sys.stdout", stdout)
+
+    main()
+
+    assert stdout.getvalue() == "hey\n"
+
+
+def test_main_renders_nested_variable_from_command_line(monkeypatch):
+    stdout = io.StringIO()
+
+    monkeypatch.setattr(
+        "sys.argv",
+        ["jiren", "-", "--", "--greeting.message=hello"],
+    )
+    monkeypatch.setattr("sys.stdin", io.StringIO("{{ greeting.message }}"))
+    monkeypatch.setattr("sys.stdout", stdout)
+
+    main()
+
+    assert stdout.getvalue() == "hello\n"
+
+
+def test_main_renders_deeply_nested_variable_from_command_line(monkeypatch):
+    stdout = io.StringIO()
+
+    monkeypatch.setattr(
+        "sys.argv",
+        ["jiren", "--max-depth=2", "-", "--", "--user.profile.name=you"],
+    )
+    monkeypatch.setattr("sys.stdin", io.StringIO("{{ user.profile.name }}"))
+    monkeypatch.setattr("sys.stdout", stdout)
+
+    main()
+
+    assert stdout.getvalue() == "you\n"
+
+
+def test_main_renders_deeply_nested_variable_from_json_command_line(monkeypatch):
+    stdout = io.StringIO()
+
+    monkeypatch.setattr(
+        "sys.argv",
+        ["jiren", "-", "--", '--user.profile={"name":"you"}'],
+    )
+    monkeypatch.setattr("sys.stdin", io.StringIO("{{ user.profile.name }}"))
+    monkeypatch.setattr("sys.stdout", stdout)
+
+    main()
+
+    assert stdout.getvalue() == "you\n"
+
+
 def test_main_rejects_data_and_data_string_together(monkeypatch, tmp_path):
     data_file = tmp_path / "data.yaml"
     stderr = io.StringIO()
@@ -126,6 +203,25 @@ def test_main_help_with_stdin_template_includes_variable_options(monkeypatch):
     assert "--greeting GREETING" in stdout.getvalue()
 
 
+def test_main_help_with_data_lists_only_template_variable_options(
+    monkeypatch, tmp_path
+):
+    data_file = tmp_path / "data.yaml"
+    data_file.write_text("message: hello\nunused: value")
+    stdout = io.StringIO()
+
+    monkeypatch.setattr("sys.argv", ["jiren", f"--data={data_file}", "--help", "-"])
+    monkeypatch.setattr("sys.stdin", io.StringIO("{{ message }}"))
+    monkeypatch.setattr("sys.stdout", stdout)
+
+    with pytest.raises(SystemExit) as error:
+        main()
+
+    assert error.value.code == 0
+    assert "--message MESSAGE" in stdout.getvalue()
+    assert "--unused UNUSED" not in stdout.getvalue()
+
+
 def test_main_help_without_template_does_not_read_stdin(monkeypatch):
     stdin = io.StringIO("{{ greeting }}")
     stdout = io.StringIO()
@@ -168,7 +264,7 @@ def test_main_converts_core_errors_to_argument_errors(monkeypatch, tmp_path):
         main()
 
     assert error.value.code == 2
-    assert "the data file contains unknown variables: unused" in stderr.getvalue()
+    assert "the data source contains unknown variables: unused" in stderr.getvalue()
 
 
 def test_main_includes_data_path_for_invalid_data(monkeypatch, tmp_path):
@@ -184,7 +280,9 @@ def test_main_includes_data_path_for_invalid_data(monkeypatch, tmp_path):
         main()
 
     assert error.value.code == 2
-    assert f"the data file must have at least one key: {data_file}" in stderr.getvalue()
+    assert (
+        f"the data source must have at least one key: {data_file}" in stderr.getvalue()
+    )
 
 
 def test_main_labels_data_string_for_invalid_data(monkeypatch):
@@ -199,5 +297,5 @@ def test_main_labels_data_string_for_invalid_data(monkeypatch):
 
     assert error.value.code == 2
     assert (
-        "the data file must have at least one key: --data-string" in stderr.getvalue()
+        "the data source must have at least one key: --data-string" in stderr.getvalue()
     )
