@@ -1,16 +1,19 @@
+from collections.abc import Mapping
 from typing import Any
 
-import jinja2
-from jinja2 import meta
+from minijinja import Environment
 
 
 class Template:
     def __init__(self, source: str):
-        env = jinja2.Environment()
-        self._template = env.from_string(source)
+        self.env = Environment(templates={"source": source})
+        self.variables = self.env.undeclared_variables_in_template("source")
 
-        ast = env.parse(source)
-        self.variables = meta.find_undeclared_variables(ast)
-
-    def render(self, *args: Any, **kwargs: Any) -> str:
-        return self._template.render(*args, **kwargs)
+    def render(
+        self, context: Mapping[str, Any] | None = None, /, **override_context: Any
+    ) -> str:
+        if context is not None:
+            context = {**context, **override_context}
+        else:
+            context = override_context
+        return self.env.render_template("source", **context)
