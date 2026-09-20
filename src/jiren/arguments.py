@@ -30,9 +30,16 @@ def parse_cli_arguments(
         action="store_true",
         help="All variables contained in the data file must be used in the template.",
     )
+
+    def non_negative_int(value: str) -> int:
+        parsed = int(value)
+        if parsed < 0:
+            raise argparse.ArgumentTypeError("must be greater than or equal to 0")
+        return parsed
+
     parser.add_argument(
         "--max-depth",
-        type=int,
+        type=non_negative_int,
         default=1,
         help="Maximum nesting depth for command-line variables.",
     )
