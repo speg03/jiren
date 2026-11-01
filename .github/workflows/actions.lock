@@ -8,15 +8,15 @@ workflows:
         - 'actions/configure-pages@v6.0.0'
         - 'actions/deploy-pages@v5.0.1'
         - 'actions/upload-pages-artifact@v5.0.0'
-        - 'astral-sh/setup-uv@v10.2.0'
+        - 'astral-sh/setup-uv@v10.3.2'
     '.github/workflows/python-tests.yml':
         - 'actions/checkout@v7.0.1'
-        - 'astral-sh/setup-uv@v10.2.0'
+        - 'astral-sh/setup-uv@v10.3.2'
         - 'codecov/codecov-action@v7.1.1'
     '.github/workflows/release.yml':
         - 'actions/checkout@v7.0.1'
         - 'actions/setup-node@v7.1.0'
-        - 'astral-sh/setup-uv@v10.2.0'
+        - 'astral-sh/setup-uv@v10.3.2'
 dependencies:
     'actions/checkout@v7.0.1':
         ref: 'v7.0.1'
@@ -55,9 +55,9 @@ dependencies:
         repo_id: 496012378
         uses:
             - 'actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f'
-    'astral-sh/setup-uv@v10.2.0':
-        ref: 'v10.2.0'
-        commit: 'sha1-c18668ad3cf93ea998bef934396af7bb5c839dc7'
+    'astral-sh/setup-uv@v10.3.2':
+        ref: 'v10.3.2'
+        commit: 'sha1-07a047e608db84b3d8c06cd9a7c7dcc9c355c18e'
         owner_id: 115962839
         repo_id: 846733598
     'codecov/codecov-action@v7.1.1':

@@ -34,7 +34,7 @@ jobs:
           node-version: "lts/*"
           cache: npm
       - name: Install the latest version of uv
-        uses: astral-sh/setup-uv@v10.2.0
+        uses: astral-sh/setup-uv@v10.3.2
       - name: Install release dependencies
         run: npm clean-install
       - name: Release
