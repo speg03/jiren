@@ -8,7 +8,7 @@ _jiren_ renders [Jinja templates](https://jinja.palletsprojects.com/) from files
 
 ## Installation
 
-jiren requires Python 3.10 or later.
+jiren requires Python 3.11 or later.
 
 Install jiren with pip:
 
